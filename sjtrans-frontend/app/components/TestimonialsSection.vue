@@ -13,7 +13,6 @@
         <button
           @click="showReviewModal = true"
           class="btn-outline text-xs py-2 px-5 rounded-full cursor-pointer"
-          :style="{ borderColor: primaryColor, color: primaryColor }"
         >
           ✍️ Tulis Pengalaman & Ulasan
         </button>

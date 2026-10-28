@@ -12,25 +12,25 @@
         </p>
 
         <!-- Demo 1-Click Login Helper -->
-        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200 mb-6 text-left space-y-2">
+        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200 mb-6 text-left space-y-2.5">
           <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Pilih Akun Demo Admin:</div>
           <button
             @click="quickLogin('superadmin', 'password123')"
-            class="w-full py-2 px-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold transition flex items-center justify-between cursor-pointer"
+            class="w-full py-2.5 px-4 rounded-xl bg-purple-600 hover:bg-purple-700 text-white hover:text-white text-xs font-bold transition flex items-center justify-between cursor-pointer shadow-sm"
           >
-            <span>👑 Login sebagai Super Admin</span>
-            <span class="text-[10px] bg-purple-800 px-1.5 py-0.5 rounded">Penuh</span>
+            <span class="text-white">👑 Login sebagai Super Admin</span>
+            <span class="text-[10px] bg-purple-800 text-white px-2 py-0.5 rounded font-black">Penuh</span>
           </button>
           <button
             @click="quickLogin('admin', 'password123')"
-            class="w-full py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition flex items-center justify-between cursor-pointer"
+            class="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white hover:text-white text-xs font-bold transition flex items-center justify-between cursor-pointer shadow-sm"
           >
-            <span>⚙️ Login sebagai Admin Operasional</span>
-            <span class="text-[10px] bg-blue-800 px-1.5 py-0.5 rounded">Operasional</span>
+            <span class="text-white">⚙️ Login sebagai Admin Operasional</span>
+            <span class="text-[10px] bg-blue-800 text-white px-2 py-0.5 rounded font-black">Operasional</span>
           </button>
         </div>
 
-        <NuxtLink to="/" class="text-xs font-semibold text-slate-500 hover:text-slate-800 transition">
+        <NuxtLink to="/" class="text-xs font-bold text-slate-500 hover:text-blue-700 transition inline-block mt-2">
           ← Kembali ke Website Utama
         </NuxtLink>
       </div>
@@ -47,7 +47,7 @@
           <!-- Mobile Sidebar Toggle -->
           <button
             @click="mobileSidebarOpen = !mobileSidebarOpen"
-            class="lg:hidden p-1.5 rounded-xl bg-white/10 hover:bg-white/20 transition cursor-pointer"
+            class="lg:hidden p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition cursor-pointer"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
           </button>
@@ -59,7 +59,7 @@
             >
               SJ
             </div>
-            <span class="text-sm font-black tracking-tight hidden sm:inline">SJTRANS <span class="text-slate-400 font-normal">| Admin Center</span></span>
+            <span class="text-sm font-black tracking-tight text-white hidden sm:inline">SJTRANS <span class="text-slate-400 font-normal">| Admin Center</span></span>
           </NuxtLink>
 
           <!-- Distinct Role Badge -->
@@ -79,14 +79,14 @@
             <button
               @click="setLocale('id')"
               class="px-2 py-0.5 rounded-full text-[10px] font-bold transition cursor-pointer"
-              :class="locale === 'id' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'"
+              :class="locale === 'id' ? 'bg-blue-600 text-white' : 'text-slate-300 hover:text-white hover:bg-white/10'"
             >
               🇮🇩 ID
             </button>
             <button
               @click="setLocale('en')"
               class="px-2 py-0.5 rounded-full text-[10px] font-bold transition cursor-pointer"
-              :class="locale === 'en' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'"
+              :class="locale === 'en' ? 'bg-blue-600 text-white' : 'text-slate-300 hover:text-white hover:bg-white/10'"
             >
               🇬🇧 EN
             </button>
@@ -94,7 +94,7 @@
 
           <NuxtLink
             to="/"
-            class="text-xs text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full font-semibold transition hidden sm:inline-flex items-center gap-1"
+            class="text-xs text-white bg-white/15 hover:bg-white/30 border border-white/20 px-3 py-1.5 rounded-full font-bold transition hover:text-white hidden sm:inline-flex items-center gap-1.5 shadow-xs"
           >
             <span>🌐</span>
             <span>{{ t('admin.back_to_site') }}</span>
@@ -105,7 +105,7 @@
             <span class="text-xs font-bold text-slate-200 hidden md:inline">{{ user?.name }}</span>
             <button
               @click="handleLogout"
-              class="bg-red-600/80 hover:bg-red-600 text-white px-2.5 py-1 rounded-xl text-xs font-bold transition cursor-pointer"
+              class="bg-red-600 hover:bg-red-700 text-white hover:text-white px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer shadow-xs"
             >
               {{ t('logout') }}
             </button>
@@ -123,7 +123,7 @@
           <!-- Mobile Sidebar Header Close -->
           <div class="lg:hidden p-4 border-b border-slate-100 flex items-center justify-between bg-slate-900 text-white">
             <span class="text-xs font-bold">Menu Panel Admin</span>
-            <button @click="mobileSidebarOpen = false" class="text-white text-sm font-bold p-1">✕</button>
+            <button @click="mobileSidebarOpen = false" class="text-white text-sm font-bold p-1 cursor-pointer">✕</button>
           </div>
 
           <!-- Template Information Box -->
@@ -142,13 +142,15 @@
             </div>
           </div>
 
-          <!-- Sidebar Navigation Items -->
-          <nav class="flex-1 p-3 space-y-1 overflow-y-auto text-xs font-bold">
+          <!-- Sidebar Navigation Items (High-Contrast Solid Hover) -->
+          <nav class="flex-1 p-3 space-y-1.5 overflow-y-auto text-xs font-bold">
             <!-- 1. Overview Stats -->
             <button
               @click="activeTab = 'stats'; mobileSidebarOpen = false"
-              class="w-full text-left px-3 py-2.5 rounded-xl transition flex items-center gap-2.5 cursor-pointer"
-              :class="activeTab === 'stats' ? (isSuperAdmin ? 'bg-purple-600 text-white' : 'bg-blue-600 text-white') : 'text-slate-600 hover:bg-slate-50'"
+              class="w-full text-left px-3 py-2.5 rounded-xl transition flex items-center gap-2.5 cursor-pointer font-bold"
+              :class="activeTab === 'stats'
+                ? (isSuperAdmin ? 'bg-purple-600 text-white shadow-sm hover:bg-purple-700 hover:text-white' : 'bg-blue-600 text-white shadow-sm hover:bg-blue-700 hover:text-white')
+                : (isSuperAdmin ? 'text-slate-700 hover:text-purple-700 hover:bg-purple-50' : 'text-slate-700 hover:text-blue-700 hover:bg-blue-50')"
             >
               <span class="text-base">📊</span>
               <span>{{ t('admin.dashboard') }}</span>
@@ -157,14 +159,16 @@
             <!-- 2. Pemesanan -->
             <button
               @click="activeTab = 'bookings'; mobileSidebarOpen = false"
-              class="w-full text-left px-3 py-2.5 rounded-xl transition flex items-center justify-between cursor-pointer"
-              :class="activeTab === 'bookings' ? (isSuperAdmin ? 'bg-purple-600 text-white' : 'bg-blue-600 text-white') : 'text-slate-600 hover:bg-slate-50'"
+              class="w-full text-left px-3 py-2.5 rounded-xl transition flex items-center justify-between cursor-pointer font-bold"
+              :class="activeTab === 'bookings'
+                ? (isSuperAdmin ? 'bg-purple-600 text-white shadow-sm hover:bg-purple-700 hover:text-white' : 'bg-blue-600 text-white shadow-sm hover:bg-blue-700 hover:text-white')
+                : (isSuperAdmin ? 'text-slate-700 hover:text-purple-700 hover:bg-purple-50' : 'text-slate-700 hover:text-blue-700 hover:bg-blue-50')"
             >
               <div class="flex items-center gap-2.5">
                 <span class="text-base">🎫</span>
                 <span>{{ t('admin.bookings') }}</span>
               </div>
-              <span class="text-[10px] px-1.5 py-0.5 rounded-full" :class="activeTab === 'bookings' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'">
+              <span class="text-[10px] px-2 py-0.5 rounded-full font-black" :class="activeTab === 'bookings' ? 'bg-white/25 text-white' : 'bg-slate-200 text-slate-700'">
                 {{ bookings.length }}
               </span>
             </button>
@@ -172,14 +176,16 @@
             <!-- 3. Transaksi & Verifikasi -->
             <button
               @click="activeTab = 'transactions'; mobileSidebarOpen = false"
-              class="w-full text-left px-3 py-2.5 rounded-xl transition flex items-center justify-between cursor-pointer"
-              :class="activeTab === 'transactions' ? (isSuperAdmin ? 'bg-purple-600 text-white' : 'bg-blue-600 text-white') : 'text-slate-600 hover:bg-slate-50'"
+              class="w-full text-left px-3 py-2.5 rounded-xl transition flex items-center justify-between cursor-pointer font-bold"
+              :class="activeTab === 'transactions'
+                ? (isSuperAdmin ? 'bg-purple-600 text-white shadow-sm hover:bg-purple-700 hover:text-white' : 'bg-blue-600 text-white shadow-sm hover:bg-blue-700 hover:text-white')
+                : (isSuperAdmin ? 'text-slate-700 hover:text-purple-700 hover:bg-purple-50' : 'text-slate-700 hover:text-blue-700 hover:bg-blue-50')"
             >
               <div class="flex items-center gap-2.5">
                 <span class="text-base">💳</span>
                 <span>{{ t('admin.transactions') }}</span>
               </div>
-              <span class="text-[10px] px-1.5 py-0.5 rounded-full" :class="activeTab === 'transactions' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'">
+              <span class="text-[10px] px-2 py-0.5 rounded-full font-black" :class="activeTab === 'transactions' ? 'bg-white/25 text-white' : 'bg-slate-200 text-slate-700'">
                 {{ transactions.length }}
               </span>
             </button>
@@ -187,14 +193,16 @@
             <!-- 4. Armada Bus -->
             <button
               @click="activeTab = 'fleets'; mobileSidebarOpen = false"
-              class="w-full text-left px-3 py-2.5 rounded-xl transition flex items-center justify-between cursor-pointer"
-              :class="activeTab === 'fleets' ? (isSuperAdmin ? 'bg-purple-600 text-white' : 'bg-blue-600 text-white') : 'text-slate-600 hover:bg-slate-50'"
+              class="w-full text-left px-3 py-2.5 rounded-xl transition flex items-center justify-between cursor-pointer font-bold"
+              :class="activeTab === 'fleets'
+                ? (isSuperAdmin ? 'bg-purple-600 text-white shadow-sm hover:bg-purple-700 hover:text-white' : 'bg-blue-600 text-white shadow-sm hover:bg-blue-700 hover:text-white')
+                : (isSuperAdmin ? 'text-slate-700 hover:text-purple-700 hover:bg-purple-50' : 'text-slate-700 hover:text-blue-700 hover:bg-blue-50')"
             >
               <div class="flex items-center gap-2.5">
                 <span class="text-base">🚌</span>
                 <span>{{ t('admin.fleets') }}</span>
               </div>
-              <span class="text-[10px] px-1.5 py-0.5 rounded-full" :class="activeTab === 'fleets' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'">
+              <span class="text-[10px] px-2 py-0.5 rounded-full font-black" :class="activeTab === 'fleets' ? 'bg-white/25 text-white' : 'bg-slate-200 text-slate-700'">
                 {{ fleets.length }}
               </span>
             </button>
@@ -202,29 +210,33 @@
             <!-- 5. Promo & Kupon -->
             <button
               @click="activeTab = 'discounts'; mobileSidebarOpen = false"
-              class="w-full text-left px-3 py-2.5 rounded-xl transition flex items-center gap-2.5 cursor-pointer"
-              :class="activeTab === 'discounts' ? (isSuperAdmin ? 'bg-purple-600 text-white' : 'bg-blue-600 text-white') : 'text-slate-600 hover:bg-slate-50'"
+              class="w-full text-left px-3 py-2.5 rounded-xl transition flex items-center gap-2.5 cursor-pointer font-bold"
+              :class="activeTab === 'discounts'
+                ? (isSuperAdmin ? 'bg-purple-600 text-white shadow-sm hover:bg-purple-700 hover:text-white' : 'bg-blue-600 text-white shadow-sm hover:bg-blue-700 hover:text-white')
+                : (isSuperAdmin ? 'text-slate-700 hover:text-purple-700 hover:bg-purple-50' : 'text-slate-700 hover:text-blue-700 hover:bg-blue-50')"
             >
               <span class="text-base">🏷️</span>
               <span>{{ t('admin.discounts') }}</span>
             </button>
 
             <!-- 6. SUPER ADMIN EXCLUSIVE: User Management -->
-            <div v-if="isSuperAdmin" class="pt-2">
+            <div v-if="isSuperAdmin" class="pt-3">
               <div class="text-[10px] font-black text-purple-700 uppercase tracking-wider px-3 py-1 flex items-center gap-1">
                 <span>👑</span>
                 <span>Khusus Super Admin</span>
               </div>
               <button
                 @click="activeTab = 'users'; mobileSidebarOpen = false"
-                class="w-full text-left px-3 py-2.5 rounded-xl transition flex items-center justify-between cursor-pointer"
-                :class="activeTab === 'users' ? 'bg-purple-600 text-white font-extrabold' : 'text-purple-900 bg-purple-50/60 hover:bg-purple-100'"
+                class="w-full text-left px-3 py-2.5 rounded-xl transition flex items-center justify-between cursor-pointer font-bold"
+                :class="activeTab === 'users'
+                  ? 'bg-purple-600 text-white font-extrabold shadow-sm hover:bg-purple-700 hover:text-white'
+                  : 'text-purple-900 bg-purple-50/80 hover:bg-purple-600 hover:text-white'"
               >
                 <div class="flex items-center gap-2.5">
                   <span class="text-base">👥</span>
                   <span>{{ t('admin.users') }}</span>
                 </div>
-                <span class="text-[10px] bg-purple-200 text-purple-800 px-1.5 py-0.5 rounded-full font-bold">
+                <span class="text-[10px] px-2 py-0.5 rounded-full font-bold" :class="activeTab === 'users' ? 'bg-white/25 text-white' : 'bg-purple-200 text-purple-900'">
                   {{ users.length }}
                 </span>
               </button>
@@ -238,7 +250,7 @@
           </nav>
 
           <!-- Sidebar Footer Status -->
-          <div class="p-3 border-t border-slate-100 text-center text-[10px] text-slate-400">
+          <div class="p-3 border-t border-slate-100 text-center text-[10px] text-slate-400 font-semibold">
             SJ Trans Admin OS v2.0 • Online
           </div>
         </aside>
@@ -261,7 +273,7 @@
                 </h1>
                 <p class="text-xs text-slate-500">Status armada, omset pemesanan, dan transaksi real-time.</p>
               </div>
-              <span class="text-xs text-slate-400 font-semibold bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs self-start sm:self-auto">
+              <span class="text-xs text-slate-500 font-bold bg-white px-3.5 py-1.5 rounded-xl border border-slate-200 shadow-2xs self-start sm:self-auto">
                 🕒 Terakhir diperbarui: {{ currentTime }}
               </span>
             </div>
@@ -296,16 +308,16 @@
             <!-- Role-Specific Action Banner -->
             <div
               v-if="isSuperAdmin"
-              class="bg-gradient-to-r from-purple-900 to-indigo-950 text-white p-6 rounded-3xl shadow-md flex flex-col sm:flex-row items-center justify-between gap-4"
+              class="bg-gradient-to-r from-purple-900 to-indigo-950 text-white p-6 sm:p-8 rounded-3xl shadow-md flex flex-col sm:flex-row items-center justify-between gap-4"
             >
               <div>
                 <span class="text-purple-300 text-[10px] font-bold uppercase tracking-wider block mb-1">Panel Kendali Penuh</span>
-                <h3 class="text-base sm:text-lg font-black">Kelola Akses User & Audit Keamanan Sistem</h3>
-                <p class="text-xs text-purple-200 mt-1">Anda memiliki wewenang membuat akun staf, mengubah hak akses role, serta menghapus data permanen.</p>
+                <h3 class="text-base sm:text-lg font-black text-white">Kelola Akses User & Audit Keamanan Sistem</h3>
+                <p class="text-xs text-purple-200 mt-1 max-w-xl">Anda memiliki wewenang membuat akun staf, mengubah hak akses role, serta menghapus data permanen.</p>
               </div>
               <button
                 @click="activeTab = 'users'"
-                class="bg-white text-purple-900 px-5 py-2.5 rounded-xl font-bold text-xs whitespace-nowrap shadow-md hover:bg-purple-50 transition cursor-pointer"
+                class="bg-white hover:bg-purple-100 text-purple-950 hover:text-purple-900 px-5 py-2.5 rounded-xl font-bold text-xs whitespace-nowrap shadow-md transition cursor-pointer"
               >
                 Buka Kelola Pengguna ➔
               </button>
@@ -321,7 +333,7 @@
               </div>
             </div>
 
-            <!-- Responsive Bookings Table / Card View -->
+            <!-- Responsive Bookings Table -->
             <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
               <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs">
@@ -337,7 +349,7 @@
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-slate-100 text-slate-700">
-                    <tr v-for="b in bookings" :key="b.id" class="hover:bg-slate-50/60 transition">
+                    <tr v-for="b in bookings" :key="b.id" class="hover:bg-slate-50 transition">
                       <td class="p-3.5 font-mono font-bold text-blue-600">{{ b.booking_code }}</td>
                       <td class="p-3.5">
                         <div class="font-bold text-slate-900">{{ b.customer_name }}</div>
@@ -351,7 +363,7 @@
                       <td class="p-3.5 font-bold text-slate-900 whitespace-nowrap">Rp {{ b.total_price.toLocaleString() }}</td>
                       <td class="p-3.5">
                         <span
-                          class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase"
+                          class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase"
                           :class="{
                             'bg-amber-100 text-amber-800': b.status === 'pending',
                             'bg-blue-100 text-blue-800': b.status === 'confirmed',
@@ -367,14 +379,14 @@
                           <button
                             v-if="b.status === 'pending'"
                             @click="updateBookingStatus(b.id, 'confirmed')"
-                            class="px-2 py-1 bg-emerald-600 text-white rounded text-[10px] font-bold hover:bg-emerald-700 transition cursor-pointer"
+                            class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white hover:text-white rounded-lg text-xs font-bold transition shadow-2xs cursor-pointer"
                           >
                             Konfirmasi
                           </button>
                           <button
                             v-if="b.status === 'confirmed'"
                             @click="updateBookingStatus(b.id, 'completed')"
-                            class="px-2 py-1 bg-blue-600 text-white rounded text-[10px] font-bold hover:bg-blue-700 transition cursor-pointer"
+                            class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white hover:text-white rounded-lg text-xs font-bold transition shadow-2xs cursor-pointer"
                           >
                             Selesai
                           </button>
@@ -382,7 +394,7 @@
                           <button
                             v-if="isSuperAdmin"
                             @click="deleteBooking(b.id)"
-                            class="px-2 py-1 bg-red-100 text-red-700 hover:bg-red-200 rounded text-[10px] font-bold transition cursor-pointer"
+                            class="px-3 py-1.5 bg-red-50 hover:bg-red-600 text-red-700 hover:text-white border border-red-200 rounded-lg text-xs font-bold transition shadow-2xs cursor-pointer"
                             title="Hapus Permanen (Super Admin Only)"
                           >
                             Hapus
@@ -415,14 +427,14 @@
                   <div class="flex items-center justify-between mb-2">
                     <span class="font-mono text-xs font-bold text-slate-700">{{ tx.invoice_number }}</span>
                     <span
-                      class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase"
+                      class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase"
                       :class="tx.status === 'verified' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'"
                     >
                       {{ tx.status }}
                     </span>
                   </div>
 
-                  <div class="text-sm font-black text-slate-900 mb-1">
+                  <div class="text-base font-black text-slate-900 mb-1">
                     Rp {{ tx.amount.toLocaleString() }}
                   </div>
                   <div class="text-xs text-slate-600">Metode: <strong>{{ tx.payment_method }}</strong></div>
@@ -430,8 +442,8 @@
 
                   <!-- Proof Image Mock -->
                   <div class="mt-3 p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs flex items-center justify-between">
-                    <span class="text-slate-600">Bukti Transfer:</span>
-                    <a :href="tx.proof_url" target="_blank" class="text-blue-600 font-bold hover:underline">
+                    <span class="text-slate-600 font-medium">Bukti Transfer:</span>
+                    <a :href="tx.proof_url" target="_blank" class="text-blue-600 font-bold hover:text-blue-800 hover:underline">
                       Lihat Bukti Foto ➔
                     </a>
                   </div>
@@ -441,18 +453,18 @@
                   <button
                     v-if="tx.status === 'pending'"
                     @click="verifyTransaction(tx.id, 'rejected')"
-                    class="px-3 py-1.5 rounded-xl bg-red-100 text-red-700 text-xs font-bold hover:bg-red-200 transition cursor-pointer"
+                    class="px-3.5 py-1.5 rounded-xl bg-red-50 hover:bg-red-600 text-red-700 hover:text-white border border-red-200 text-xs font-bold transition shadow-2xs cursor-pointer"
                   >
                     Tolak
                   </button>
                   <button
                     v-if="tx.status === 'pending'"
                     @click="verifyTransaction(tx.id, 'verified')"
-                    class="px-4 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 transition cursor-pointer"
+                    class="px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white hover:text-white text-xs font-bold transition shadow-2xs cursor-pointer"
                   >
                     Verifikasi Lunas ✓
                   </button>
-                  <span v-else class="text-xs text-emerald-600 font-bold">
+                  <span v-else class="text-xs text-emerald-600 font-bold bg-emerald-50 px-3 py-1 rounded-lg">
                     ✓ Terverifikasi Lunas
                   </span>
                 </div>
@@ -485,12 +497,12 @@
                 </div>
 
                 <div class="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between">
-                  <span class="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded">Tersedia</span>
+                  <span class="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2.5 py-1 rounded-lg">Tersedia</span>
                   <!-- Super admin exclusive delete button -->
                   <button
                     v-if="isSuperAdmin"
                     @click="deleteFleet(fl.id)"
-                    class="text-[10px] text-red-600 font-bold hover:underline cursor-pointer"
+                    class="px-3 py-1.5 rounded-xl bg-red-50 hover:bg-red-600 text-red-700 hover:text-white border border-red-200 text-xs font-bold transition shadow-2xs cursor-pointer"
                   >
                     Hapus Armada
                   </button>
@@ -522,8 +534,11 @@
 
                 <div class="text-right">
                   <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Aktif</span>
-                  <div v-if="isSuperAdmin" class="mt-2">
-                    <button @click="deleteDiscount(d.id)" class="text-[10px] text-red-600 font-bold hover:underline cursor-pointer">
+                  <div v-if="isSuperAdmin" class="mt-3">
+                    <button
+                      @click="deleteDiscount(d.id)"
+                      class="px-3 py-1.5 rounded-xl bg-red-50 hover:bg-red-600 text-red-700 hover:text-white border border-red-200 text-xs font-bold transition shadow-2xs cursor-pointer"
+                    >
                       Hapus Kupon
                     </button>
                   </div>
@@ -555,13 +570,13 @@
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-slate-100 text-slate-700">
-                    <tr v-for="u in users" :key="u.id" class="hover:bg-purple-50/30 transition">
+                    <tr v-for="u in users" :key="u.id" class="hover:bg-purple-50/40 transition">
                       <td class="p-3.5">
                         <div class="font-bold text-slate-900">{{ u.name }}</div>
                         <div class="text-[10px] font-mono text-slate-400">@{{ u.username }}</div>
                       </td>
                       <td class="p-3.5">
-                        <div class="text-slate-800">{{ u.email }}</div>
+                        <div class="text-slate-800 font-medium">{{ u.email }}</div>
                         <div class="text-[10px] text-slate-400">{{ u.phone_number }}</div>
                       </td>
                       <td class="p-3.5">
@@ -583,7 +598,7 @@
                         <button
                           v-if="u.role?.name !== 'super_admin'"
                           @click="toggleUserRole(u)"
-                          class="px-2.5 py-1 bg-purple-100 hover:bg-purple-200 text-purple-800 font-bold text-[10px] rounded-lg transition cursor-pointer"
+                          class="px-3 py-1.5 bg-purple-50 hover:bg-purple-600 text-purple-800 hover:text-white border border-purple-200 font-bold text-xs rounded-xl transition shadow-2xs cursor-pointer"
                         >
                           Ubah Hak Akses Role
                         </button>

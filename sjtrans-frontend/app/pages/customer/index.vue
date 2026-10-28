@@ -183,7 +183,6 @@
                 <button
                   @click="openInvoiceModal(order)"
                   class="btn-outline text-xs py-2 px-4 rounded-xl font-bold cursor-pointer transition flex items-center gap-1.5"
-                  :style="{ borderColor: primaryColor, color: primaryColor }"
                 >
                   <span>📄</span>
                   <span>{{ t('customer.download_ticket') }}</span>

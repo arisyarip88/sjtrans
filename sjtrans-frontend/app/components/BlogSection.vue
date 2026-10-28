@@ -18,7 +18,6 @@
         <NuxtLink
           to="/blog"
           class="btn-outline text-xs py-2.5 px-5 rounded-full font-bold transition self-start sm:self-auto flex items-center gap-1.5 shrink-0 shadow-2xs"
-          :style="{ borderColor: primaryColor, color: primaryColor }"
         >
           <span>{{ locale === 'en' ? 'View All Articles' : 'Lihat Semua Artikel' }}</span>
           <span>➔</span>

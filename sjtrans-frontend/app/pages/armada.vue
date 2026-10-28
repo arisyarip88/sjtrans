@@ -134,7 +134,6 @@
                 <button
                   @click="openDetailModal(bus)"
                   class="btn-outline text-xs py-2 px-3 rounded-xl font-bold cursor-pointer transition"
-                  :style="{ borderColor: primaryColor, color: primaryColor }"
                 >
                   Detail
                 </button>
