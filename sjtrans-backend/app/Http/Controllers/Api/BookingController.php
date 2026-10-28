@@ -22,10 +22,13 @@ class BookingController extends Controller
         $user = $request->user();
         $query = Booking::with(['fleet', 'discount', 'transactions']);
 
-        // Jika bukan admin, hanya ambil pesanan milik user yang sedang login
+        // Jika bukan admin, ambil pesanan milik user (berdasarkan user_id ATAU customer_email)
         if (!$user || !$user->isAdmin()) {
             if ($user) {
-                $query->where('user_id', $user->id);
+                $query->where(function ($q) use ($user) {
+                    $q->where('user_id', $user->id)
+                      ->orWhere('customer_email', $user->email);
+                });
             } else {
                 return response()->json(['data' => []]);
             }
@@ -131,6 +134,12 @@ class BookingController extends Controller
         $bookingCode = 'SJT-' . date('Ym') . '-' . strtoupper(Str::random(5));
 
         $userId = $request->user() ? $request->user()->id : null;
+        if (!$userId && !empty($validated['customer_email'])) {
+            $matchedUser = User::where('email', $validated['customer_email'])->first();
+            if ($matchedUser) {
+                $userId = $matchedUser->id;
+            }
+        }
 
         $booking = Booking::create([
             'booking_code' => $bookingCode,

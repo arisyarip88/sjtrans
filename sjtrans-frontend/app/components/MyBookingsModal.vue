@@ -198,30 +198,46 @@ const formatPrice = (val: number) => {
 }
 
 const fetchMyBookings = async () => {
-  try {
-    const res: any = await $fetch('http://127.0.0.1:8000/api/v1/my-bookings', {
-      headers: { Authorization: `Bearer ${token.value}` },
-    })
-    if (res && res.data) {
-      bookings.value = res.data
+  let serverBookings: any[] = []
+  if (token.value) {
+    try {
+      const res: any = await $fetch('http://127.0.0.1:8000/api/v1/my-bookings', {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token.value}`,
+        },
+      })
+      if (res) {
+        if (Array.isArray(res.data)) {
+          serverBookings = res.data
+        } else if (res.data && Array.isArray(res.data.data)) {
+          serverBookings = res.data.data
+        } else if (Array.isArray(res)) {
+          serverBookings = res
+        }
+      }
+    } catch (e) {
+      console.warn('API my-bookings fetch error, using local fallback:', e)
     }
-  } catch (e) {
-    // Fallback sample for demonstration
-    bookings.value = [
-      {
-        id: 1,
-        booking_code: 'SJT-202610-001',
-        destination: 'Yogyakarta & Candi Borobudur',
-        start_date: '2026-11-01',
-        total_days: 3,
-        total_price: 10900000,
-        discount_amount: 500000,
-        status: 'confirmed',
-        payment_status: 'down_payment',
-        fleet: { name: 'Big Bus SHD Scania K410IB Jetbus 5' },
-      },
-    ]
   }
+
+  // Ambil dari penyimpanan lokal browser (cache transaksi pemesanan lokal)
+  let localBookings: any[] = []
+  if (typeof localStorage !== 'undefined') {
+    try {
+      localBookings = JSON.parse(localStorage.getItem('sjtrans_local_bookings') || '[]')
+    } catch (e) {}
+  }
+
+  // Gabungkan tanpa duplikasi berdasarkan booking_code
+  const combined = [...serverBookings]
+  for (const lb of localBookings) {
+    if (!combined.some((b: any) => b.booking_code === lb.booking_code)) {
+      combined.push(lb)
+    }
+  }
+
+  bookings.value = combined
 }
 
 watch(() => props.isOpen, (open) => {

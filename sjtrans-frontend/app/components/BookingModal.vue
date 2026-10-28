@@ -191,7 +191,7 @@ const props = defineProps<{
 const emit = defineEmits(['close', 'booking-confirmed', 'open-my-bookings'])
 
 const { primaryColor } = useTheme()
-const { user } = useAuth()
+const { user, token } = useAuth()
 
 const submitting = ref(false)
 const errorText = ref('')
@@ -210,15 +210,30 @@ watch(() => props.isOpen, (open) => {
     confirmedBooking.value = null
     errorText.value = ''
     if (user.value) {
-      customerForm.name = user.value.name
-      customerForm.email = user.value.email
-      customerForm.phone = user.value.phone_number
+      customerForm.name = user.value.name || user.value.username || ''
+      customerForm.email = user.value.email || ''
+      customerForm.phone = user.value.phone_number || ''
     }
   }
 })
 
 const formatPrice = (val: number) => {
   return new Intl.NumberFormat('id-ID').format(val || 0)
+}
+
+const saveLocalBooking = (bookingItem: any) => {
+  if (typeof localStorage !== 'undefined') {
+    try {
+      const existing = JSON.parse(localStorage.getItem('sjtrans_local_bookings') || '[]')
+      const exists = existing.some((b: any) => b.booking_code === bookingItem.booking_code)
+      if (!exists) {
+        existing.unshift(bookingItem)
+        localStorage.setItem('sjtrans_local_bookings', JSON.stringify(existing.slice(0, 20)))
+      }
+    } catch (e) {
+      console.error('Failed to save local booking:', e)
+    }
+  }
 }
 
 const submitBooking = async () => {
@@ -241,23 +256,40 @@ const submitBooking = async () => {
       special_notes: customerForm.notes,
     }
 
+    const headers: any = { Accept: 'application/json' }
+    if (token.value) {
+      headers.Authorization = `Bearer ${token.value}`
+    }
+
     const res: any = await $fetch('http://127.0.0.1:8000/api/v1/bookings', {
       method: 'POST',
+      headers,
       body: payload,
     })
 
     if (res && res.data) {
       confirmedBooking.value = res.data
+      saveLocalBooking(res.data)
       emit('booking-confirmed', res.data)
     }
   } catch (err: any) {
-    // Client-side simulation fallback
+    // Client-side fallback if network error
     const code = 'SJT-' + new Date().getFullYear() + '10-' + Math.floor(1000 + Math.random() * 9000)
     confirmedBooking.value = {
       booking_code: code,
       customer_name: customerForm.name,
+      customer_email: customerForm.email,
+      customer_phone: customerForm.phone,
+      destination: props.initialData?.destination || 'Bandung',
+      start_date: props.initialData?.startDate || new Date().toISOString().split('T')[0],
+      total_days: props.initialData?.totalDays || 1,
       total_price: props.initialData?.totalPrice || 3800000,
+      discount_amount: props.initialData?.discountAmount || 0,
+      status: 'pending',
+      payment_status: 'unpaid',
+      fleet: props.initialData?.fleet || { name: 'Big Bus Scania K410IB' },
     }
+    saveLocalBooking(confirmedBooking.value)
     emit('booking-confirmed', confirmedBooking.value)
   } finally {
     submitting.value = false

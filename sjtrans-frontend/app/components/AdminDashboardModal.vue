@@ -524,6 +524,50 @@ const filteredBookings = computed(() => {
   )
 })
 
+const fetchAdminData = async () => {
+  if (!token.value) return
+  const headers = { Accept: 'application/json', Authorization: `Bearer ${token.value}` }
+
+  try {
+    const [statsRes, bookingsRes, trxRes, usersRes]: any = await Promise.all([
+      $fetch('http://127.0.0.1:8000/api/v1/dashboard/stats', { headers }).catch(() => null),
+      $fetch('http://127.0.0.1:8000/api/v1/admin/bookings', { headers }).catch(() => null),
+      $fetch('http://127.0.0.1:8000/api/v1/admin/transactions', { headers }).catch(() => null),
+      isSuperAdmin.value ? $fetch('http://127.0.0.1:8000/api/v1/admin/users', { headers }).catch(() => null) : null,
+    ])
+
+    if (statsRes?.data) {
+      Object.assign(stats, statsRes.data)
+    }
+
+    if (bookingsRes) {
+      const bData = Array.isArray(bookingsRes.data) ? bookingsRes.data : (bookingsRes.data?.data || bookingsRes.data || [])
+      if (Array.isArray(bData) && bData.length > 0) {
+        bookingsList.value = bData
+      }
+    }
+
+    if (trxRes) {
+      const tData = Array.isArray(trxRes.data) ? trxRes.data : (trxRes.data?.data || trxRes.data || [])
+      if (Array.isArray(tData) && tData.length > 0) {
+        transactionsList.value = tData
+      }
+    }
+
+    if (usersRes?.data) {
+      usersList.value = usersRes.data
+    }
+  } catch (err) {
+    console.warn('Error fetching live admin data:', err)
+  }
+}
+
+watch(() => props.isOpen, (open) => {
+  if (open) {
+    fetchAdminData()
+  }
+})
+
 const formatPrice = (val: number) => {
   return new Intl.NumberFormat('id-ID').format(val || 0)
 }
