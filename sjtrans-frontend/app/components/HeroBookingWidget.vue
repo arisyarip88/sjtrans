@@ -9,15 +9,19 @@
         <div class="lg:col-span-6 space-y-6">
           <div class="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-400/30 px-3.5 py-1.5 rounded-full text-xs font-semibold text-blue-200">
             <span class="w-2 h-2 rounded-full bg-blue-400 animate-ping"></span>
-            <span>Standar Layanan Bus Pariwisata Eksekutif</span>
+            <span>{{ t('hero.badge') }}</span>
           </div>
 
           <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-[1.15] tracking-tight">
-            Sewa Bus Pariwisata <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-sky-200 to-white">Mulai Rp 1 Jutaan</span> di SJ Trans
+            {{ locale === 'en' ? 'Executive Tour Bus Rental' : 'Sewa Bus Pariwisata' }}
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-sky-200 to-white">
+              {{ locale === 'en' ? 'Starting from Rp 1 Million' : 'Mulai Rp 1 Jutaan' }}
+            </span>
+            {{ locale === 'en' ? 'with SJ Trans' : 'di SJ Trans' }}
           </h1>
 
           <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-xl">
-            Transportasi perjalanan paling nyaman & berkelas. Pilihan armada Toyota HiAce, Medium Bus Jetbus 3+, hingga Big Bus Scania SHD kapasitas 14 hingga 59 penumpang dengan proteksi asuransi resmi.
+            {{ t('hero.desc') }}
           </p>
 
           <!-- 4 Trust Badges -->
@@ -36,7 +40,7 @@
             </div>
             <div class="bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/10 text-center">
               <div class="text-lg font-black text-sky-300">24 Jam</div>
-              <div class="text-[11px] text-slate-300 font-medium">Layanan Darurat</div>
+              <div class="text-[11px] text-slate-300 font-medium">Layanan Siaga</div>
             </div>
           </div>
         </div>
@@ -46,7 +50,7 @@
           <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl text-slate-800 border border-slate-100 relative">
             <div class="flex items-center justify-between pb-4 border-b border-slate-100">
               <div>
-                <h2 class="text-lg sm:text-xl font-bold text-slate-900">Hitung & Pesan Bus Cepat</h2>
+                <h2 class="text-lg sm:text-xl font-bold text-slate-900">{{ t('calc.title') }}</h2>
                 <p class="text-xs text-slate-500">Estimasi tarif transparan tanpa biaya tersembunyi</p>
               </div>
               <span class="bg-blue-50 text-blue-700 text-xs font-bold px-3 py-1 rounded-full border border-blue-100">Instan</span>
@@ -57,121 +61,160 @@
               <!-- Asal & Tujuan -->
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label class="block font-semibold text-slate-700 mb-1">Kota Penjemputan</label>
-                  <select v-model="form.origin" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 font-medium focus:ring-2 focus:ring-blue-600 focus:outline-none">
-                    <option value="Jakarta">Jakarta (Jabodetabek)</option>
-                    <option value="Bandung">Bandung & Sekitarnya</option>
-                    <option value="Bogor">Bogor / Sentul</option>
-                    <option value="Yogyakarta">Yogyakarta</option>
-                    <option value="Surabaya">Surabaya</option>
+                  <label class="block font-semibold text-slate-700 mb-1">{{ t('calc.origin') }}</label>
+                  <select v-model="form.origin" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600">
+                    <option value="Jakarta">Jakarta (Seluruh Wilayah)</option>
+                    <option value="Bogor">Bogor & Sekitarnya</option>
+                    <option value="Depok">Depok & Sekitarnya</option>
+                    <option value="Tangerang">Tangerang & BSD</option>
+                    <option value="Bekasi">Bekasi & Cikarang</option>
                   </select>
                 </div>
                 <div>
-                  <label class="block font-semibold text-slate-700 mb-1">Kota Tujuan Wisata</label>
-                  <input
-                    v-model="form.destination"
-                    type="text"
-                    placeholder="Contoh: Bandung, Jogja, Bali, dll."
-                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 font-medium focus:ring-2 focus:ring-blue-600 focus:outline-none"
-                  />
+                  <label class="block font-semibold text-slate-700 mb-1">{{ t('calc.destination') }}</label>
+                  <select v-model="form.destination" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600">
+                    <option value="Bandung & Lembang">Bandung & Lembang</option>
+                    <option value="Puncak & Bogor">Puncak & Bogor</option>
+                    <option value="Yogyakarta & Solo">Yogyakarta & Solo</option>
+                    <option value="Semarang & Dieng">Semarang & Dieng</option>
+                    <option value="Surabaya & Malang Bromo">Surabaya & Malang Bromo</option>
+                    <option value="Bali Tour">Bali Tour</option>
+                    <option value="Anyer & Carita">Pantai Anyer & Carita</option>
+                  </select>
                 </div>
               </div>
 
-              <!-- Tanggal Berangkat & Selesai -->
+              <!-- Tanggal Sewa -->
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label class="block font-semibold text-slate-700 mb-1">Tanggal Berangkat</label>
+                  <label class="block font-semibold text-slate-700 mb-1">{{ t('calc.start_date') }}</label>
                   <input
                     v-model="form.startDate"
-                    type="date"
-                    :min="todayString"
                     @change="calculateDuration"
-                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 font-medium focus:ring-2 focus:ring-blue-600 focus:outline-none"
+                    type="date"
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
                 </div>
                 <div>
-                  <label class="block font-semibold text-slate-700 mb-1">Tanggal Selesai</label>
+                  <label class="block font-semibold text-slate-700 mb-1">{{ t('calc.end_date') }}</label>
                   <input
                     v-model="form.endDate"
-                    type="date"
-                    :min="form.startDate || todayString"
                     @change="calculateDuration"
-                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 font-medium focus:ring-2 focus:ring-blue-600 focus:outline-none"
+                    type="date"
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
                 </div>
               </div>
 
-              <!-- Pilihan Armada & Jumlah Penumpang -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label class="block font-semibold text-slate-700 mb-1">Pilihan Armada Bus</label>
-                  <select v-model="selectedFleetIndex" @change="recalculatePrice" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 font-medium focus:ring-2 focus:ring-blue-600 focus:outline-none">
-                    <option v-for="(fleet, idx) in fleets" :key="fleet.id" :value="idx">
-                      {{ fleet.name }} ({{ fleet.capacity }} Seat) - Rp {{ formatPrice(fleet.price_per_day) }}/hari
+              <!-- Jenis Armada & Unit -->
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="sm:col-span-2">
+                  <label class="block font-semibold text-slate-700 mb-1">{{ t('calc.fleet_type') }}</label>
+                  <select
+                    v-model="selectedFleetIndex"
+                    @change="recalculatePrice"
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  >
+                    <option
+                      v-for="(fl, idx) in fleets"
+                      :key="fl.id"
+                      :value="idx"
+                    >
+                      {{ fl.name }} ({{ fl.seats }} Seat) - Rp {{ formatPrice(fl.price_per_day) }}/hr
                     </option>
                   </select>
                 </div>
                 <div>
-                  <label class="block font-semibold text-slate-700 mb-1">Jumlah Unit Bus</label>
-                  <div class="flex items-center gap-2">
-                    <button @click="changeUnits(-1)" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 font-bold text-slate-700 text-sm">-</button>
-                    <span class="font-bold text-sm text-slate-900 w-8 text-center">{{ form.units }}</span>
-                    <button @click="changeUnits(1)" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 font-bold text-slate-700 text-sm">+</button>
-                    <span class="text-[11px] text-slate-400 ml-1">({{ durationDays }} Hari)</span>
+                  <label class="block font-semibold text-slate-700 mb-1">{{ t('calc.bus_units') }}</label>
+                  <div class="flex items-center border border-slate-200 rounded-xl bg-slate-50 overflow-hidden">
+                    <button
+                      type="button"
+                      @click="changeUnits(-1)"
+                      class="px-3 py-2.5 text-slate-600 hover:bg-slate-200 font-bold transition cursor-pointer"
+                    >
+                      -
+                    </button>
+                    <span class="flex-1 text-center font-bold text-slate-800">{{ form.units }}</span>
+                    <button
+                      type="button"
+                      @click="changeUnits(1)"
+                      class="px-3 py-2.5 text-slate-600 hover:bg-slate-200 font-bold transition cursor-pointer"
+                    >
+                      +
+                    </button>
                   </div>
                 </div>
               </div>
 
-              <!-- KOLOM DISKON & KUPON PROMO -->
-              <div class="bg-blue-50/70 border border-blue-100 rounded-2xl p-3.5 space-y-2">
-                <div class="flex items-center justify-between">
-                  <label class="block font-bold text-blue-900 text-xs">Punya Kode Promo / Kupon Diskon?</label>
-                  <span class="text-[10px] text-blue-600 cursor-pointer hover:underline" @click="applyDemoCode">Gunakan Demo: SJTPROMO10</span>
+              <!-- Input Kode Kupon / Diskon -->
+              <div class="pt-2">
+                <div class="flex justify-between items-center mb-1">
+                  <label class="font-semibold text-slate-700">{{ t('calc.discount_code') }}</label>
+                  <button
+                    type="button"
+                    @click="applyDemoCode"
+                    class="text-[11px] text-blue-600 hover:underline cursor-pointer font-medium"
+                  >
+                    Coba: SJTPROMO10
+                  </button>
                 </div>
                 <div class="flex gap-2">
                   <input
                     v-model="discountCodeInput"
                     type="text"
-                    placeholder="Masukkan kode (contoh: SJTPROMO10)"
-                    class="flex-1 uppercase font-mono bg-white border border-blue-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Contoh: SJTPROMO10 atau LIBURANSERU"
+                    class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs uppercase text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
                   <button
+                    type="button"
                     @click="applyDiscount"
-                    class="bg-blue-800 hover:bg-blue-900 text-white font-bold px-4 py-2 rounded-xl text-xs transition cursor-pointer"
+                    class="px-4 py-2 rounded-xl text-xs font-bold text-white transition cursor-pointer shadow-xs"
+                    :style="{ backgroundColor: primaryColor }"
                   >
-                    Terapkan
+                    {{ t('calc.apply_coupon') }}
                   </button>
                 </div>
 
-                <div v-if="discountMessage" class="text-[11px] font-semibold" :class="discountValid ? 'text-emerald-700' : 'text-red-600'">
+                <!-- Feedback Diskon -->
+                <div v-if="discountMessage" class="mt-1.5 text-[11px] font-medium" :class="discountValid ? 'text-emerald-600' : 'text-red-500'">
                   {{ discountMessage }}
                 </div>
               </div>
 
-              <!-- Kalkulator Rincian Biaya -->
-              <div class="pt-3 border-t border-slate-100 space-y-1.5">
-                <div class="flex justify-between text-slate-500">
-                  <span>Subtotal Sewa ({{ durationDays }} hari x {{ form.units }} unit):</span>
-                  <span class="font-semibold text-slate-800">Rp {{ formatPrice(subtotal) }}</span>
+              <!-- Price Breakdown Box -->
+              <div class="bg-blue-50/60 rounded-2xl p-4 border border-blue-100/80 space-y-2 mt-2">
+                <div class="flex justify-between text-slate-600">
+                  <span>Durasi Sewa:</span>
+                  <span class="font-bold text-slate-800">{{ durationDays }} Hari</span>
                 </div>
-                <div v-if="discountAmount > 0" class="flex justify-between text-emerald-600 font-semibold">
-                  <span>Potongan Promo ({{ activeDiscountCode }}):</span>
+                <div class="flex justify-between text-slate-600">
+                  <span>Subtotal ({{ form.units }} Unit x {{ durationDays }} Hari):</span>
+                  <span class="font-bold text-slate-800">Rp {{ formatPrice(subtotal) }}</span>
+                </div>
+                <div v-if="discountAmount > 0" class="flex justify-between text-emerald-600 font-medium">
+                  <span>Potongan Kupon Promo ({{ activeDiscountCode }}):</span>
                   <span>- Rp {{ formatPrice(discountAmount) }}</span>
                 </div>
-                <div class="flex justify-between items-baseline pt-2 border-t border-slate-200">
-                  <span class="text-sm font-bold text-slate-900">Total Biaya Sewa:</span>
-                  <span class="text-xl sm:text-2xl font-black text-blue-800">Rp {{ formatPrice(totalPrice) }}</span>
+                <div class="border-t border-blue-200/60 pt-2 flex justify-between items-baseline">
+                  <span class="font-bold text-slate-900 text-sm">{{ t('calc.est_price') }}</span>
+                  <div class="text-right">
+                    <span class="text-xl sm:text-2xl font-black text-slate-900" :style="{ color: primaryColor }">
+                      Rp {{ formatPrice(totalPrice) }}
+                    </span>
+                    <span class="block text-[10px] text-slate-400 font-normal">Sudah termasuk supir & armada</span>
+                  </div>
                 </div>
               </div>
 
               <!-- Submit Button -->
               <button
+                type="button"
                 @click="submitBookingForm"
-                class="btn-primary w-full py-3.5 text-sm font-bold tracking-wide shadow-lg justify-center cursor-pointer mt-2"
+                class="btn-primary w-full py-3.5 rounded-2xl font-bold text-sm text-center justify-center shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 cursor-pointer"
                 :style="{ backgroundColor: primaryColor }"
               >
-                <span>Lanjut Pengisian Data & Reservasi</span>
-                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                <span>{{ t('calc.button') }}</span>
+                <svg class="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
               </button>
             </div>
           </div>
@@ -183,18 +226,21 @@
 
 <script setup lang="ts">
 const { primaryColor } = useTheme()
-const { fallbackFleets } = useApi()
+const { locale, t } = useI18n()
 
 const emit = defineEmits(['start-booking'])
 
-const fleets = ref(fallbackFleets)
 const selectedFleetIndex = ref(0)
+const fleets = ref<any[]>([
+  { id: 1, name: 'Big Bus SHD Scania K410IB', seats: 50, price_per_day: 4200000 },
+  { id: 2, name: 'Big Bus Mercedes-Benz OH 1626', seats: 59, price_per_day: 3800000 },
+  { id: 3, name: 'Medium Bus Jetbus 3+ MD', seats: 31, price_per_day: 2500000 },
+  { id: 4, name: 'Toyota HiAce Premio Luxury VIP', seats: 14, price_per_day: 1500000 },
+])
 
 const today = new Date()
+const nextWeek = new Date(today.getTime() + 3 * 24 * 60 * 60 * 1000)
 const todayString = today.toISOString().split('T')[0]
-
-const nextWeek = new Date()
-nextWeek.setDate(today.getDate() + 3)
 const nextWeekString = nextWeek.toISOString().split('T')[0]
 
 const form = reactive({
@@ -268,7 +314,6 @@ const applyDiscount = async () => {
       discountMessage.value = `✓ Kupon ${code} berhasil! Hemat Rp ${formatPrice(res.discount.discount_amount)}`
     }
   } catch (err: any) {
-    // Client-side fallback calculation for seamless experience
     if (code === 'SJTPROMO10') {
       const deduction = Math.min(500000, subtotal.value * 0.1)
       activeDiscountCode.value = 'SJTPROMO10'

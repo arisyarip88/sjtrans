@@ -19,14 +19,14 @@
           </div>
 
           <p class="text-xs text-slate-400 leading-relaxed">
-            Perusahaan jasa transportasi sewa bus pariwisata profesional terpercaya di Indonesia. Berkomitmen menghadirkan kenyamanan, higienitas armada, dan keselamatan perjalanan rombongan Anda.
+            {{ t('footer.desc') }}
           </p>
 
           <!-- Izin Kemenhub & Legalitas -->
           <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 text-[11px] text-slate-400 space-y-1">
             <div class="font-bold text-slate-200">Legalitas Resmi:</div>
-            <div>Izin Operasi Kemenhub RI: <span class="text-blue-400">SK.551/AJ.205/DJP/2022</span></div>
-            <div>Terdaftar di Jasa Raharja No: <span class="text-blue-400">JR-08871/2023</span></div>
+            <div>Izin Kemenhub RI: <span class="text-blue-400">SK.551/AJ.205/DJP/2022</span></div>
+            <div>Asuransi Jasa Raharja: <span class="text-blue-400">JR-08871/2023</span></div>
           </div>
         </div>
 
@@ -40,19 +40,19 @@
             <!-- Kantor Pusat -->
             <div>
               <div class="font-semibold text-slate-200">Kantor Pusat Operasional:</div>
-              <p class="mt-0.5">Jl. TB Simatupang No. 88, Ciracas, Jakarta Timur, DKI Jakarta 13830</p>
+              <p class="mt-0.5">Gedung Cyber 2 Lantai 15, Jl. HR Rasuna Said, Jakarta Selatan 12950</p>
             </div>
 
             <!-- Pool Armada -->
             <div>
               <div class="font-semibold text-slate-200">Pool Utama Bus:</div>
-              <p class="mt-0.5">KM 26 Tol Jagorawi, Cibubur, Jakarta Timur</p>
+              <p class="mt-0.5">KM 26 Tol Jagorawi, Cibubur, Jakarta Timur 13720</p>
             </div>
 
             <!-- No Telpon & Hotline -->
             <div class="pt-2 border-t border-slate-800 space-y-1">
               <div>
-                <span class="text-slate-500">Call Center 24 Jam:</span>
+                <span class="text-slate-500">Hotline 24 Jam:</span>
                 <a href="tel:1500888" class="text-white font-bold ml-1 hover:text-blue-400 transition">1500-888</a>
               </div>
               <div>
@@ -60,16 +60,8 @@
                 <a href="https://wa.me/6281288887788" target="_blank" class="text-emerald-400 font-bold ml-1 hover:underline">0812-8888-7788</a>
               </div>
               <div>
-                <span class="text-slate-500">Telepon Kantor:</span>
-                <span class="text-slate-300 ml-1">021-8899-7700</span>
-              </div>
-              <div>
                 <span class="text-slate-500">Email Informasi:</span>
                 <a href="mailto:info@sjtrans.co.id" class="text-blue-400 ml-1 hover:underline">info@sjtrans.co.id</a>
-              </div>
-              <div>
-                <span class="text-slate-500">Email Reservasi:</span>
-                <a href="mailto:booking@sjtrans.co.id" class="text-blue-400 ml-1 hover:underline">booking@sjtrans.co.id</a>
               </div>
             </div>
           </div>
@@ -124,43 +116,37 @@
           </div>
         </div>
 
-        <!-- Kolom 4: Partnership & Tautan Cepat -->
+        <!-- Kolom 4: Navigasi Halaman Utama -->
         <div class="space-y-4">
           <h4 class="text-sm font-bold text-white uppercase tracking-wider border-b border-slate-800 pb-2">
-            Partnership & Mitra
+            {{ t('footer.quick_links') }}
           </h4>
 
           <div class="space-y-2 text-xs text-slate-400">
-            <p>Bekerja sama erat dengan:</p>
-            <ul class="space-y-1.5 pl-4 list-disc text-slate-300">
-              <li>PT Astra International Tbk</li>
-              <li>PT Jasa Raharja (Persero)</li>
-              <li>PT Pertamina Patra Niaga</li>
-              <li>Mitra Bank Mandiri & BCA</li>
-              <li>Asosiasi Pengusaha Truk & Bus (APTRINDO)</li>
-            </ul>
+            <NuxtLink to="/" class="block hover:text-white transition">➔ {{ t('nav.home') }}</NuxtLink>
+            <NuxtLink to="/armada" class="block hover:text-white transition">➔ {{ t('nav.fleets') }}</NuxtLink>
+            <NuxtLink to="/blog" class="block hover:text-white transition">➔ {{ t('nav.blog') }}</NuxtLink>
+            <NuxtLink to="/tentang-kami" class="block hover:text-white transition">➔ {{ t('nav.about') }}</NuxtLink>
+            <NuxtLink to="/customer" class="block hover:text-white transition">➔ {{ t('customer.title') }}</NuxtLink>
+            <NuxtLink to="/admin" class="block hover:text-white transition">➔ {{ t('admin_panel') }}</NuxtLink>
           </div>
 
-          <!-- Navigasi Cepat -->
           <div class="pt-2 border-t border-slate-800">
-            <div class="text-xs font-bold text-slate-300 mb-2">Akses Cepat:</div>
-            <div class="grid grid-cols-2 gap-1.5 text-xs text-slate-400">
-              <a href="#armada" class="hover:text-white transition">Sewa Big Bus</a>
-              <a href="#armada" class="hover:text-white transition">Medium Bus</a>
-              <a href="#armada" class="hover:text-white transition">HiAce Premio</a>
-              <a href="#promo" class="hover:text-white transition">Kupon Diskon</a>
-            </div>
+            <div class="text-xs font-bold text-slate-300 mb-1.5">Kemitraan Resmi:</div>
+            <p class="text-[11px] text-slate-400 leading-relaxed">
+              PT Astra International Tbk, Jasa Raharja, Pertamina Patra Niaga, Bank BCA & Mandiri.
+            </p>
           </div>
         </div>
       </div>
 
       <!-- Bottom Bar: Copyright -->
       <div class="pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-        <p>© 2026 PT Semesta Jaya Transport (SJ Trans). Hak Cipta Dilindungi Undang-Undang.</p>
+        <p>© 2026 PT Semesta Jaya Transport (SJ Trans). {{ t('footer.rights') }}</p>
         <div class="flex items-center gap-6">
-          <a href="#" class="hover:text-slate-300 transition">Syarat & Ketentuan Sewa</a>
-          <a href="#" class="hover:text-slate-300 transition">Kebijakan Privasi</a>
-          <a href="#" class="hover:text-slate-300 transition">Protokol Keselamatan</a>
+          <NuxtLink to="/tentang-kami" class="hover:text-slate-300 transition">Tentang Kami</NuxtLink>
+          <NuxtLink to="/armada" class="hover:text-slate-300 transition">Armada Bus</NuxtLink>
+          <NuxtLink to="/blog" class="hover:text-slate-300 transition">Artikel Blog</NuxtLink>
         </div>
       </div>
     </div>
@@ -169,4 +155,5 @@
 
 <script setup lang="ts">
 const { primaryColor } = useTheme()
+const { t } = useI18n()
 </script>
