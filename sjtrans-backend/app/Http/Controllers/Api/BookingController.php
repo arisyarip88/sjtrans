@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\BusFleet;
 use App\Models\Discount;
 use App\Models\Transaction;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class BookingController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $user = $request->user();
+        $user = $request->user() ?: auth('sanctum')->user();
         $query = Booking::with(['fleet', 'discount', 'transactions']);
 
         // Jika bukan admin, ambil pesanan milik user (berdasarkan user_id ATAU customer_email)
@@ -133,7 +134,7 @@ class BookingController extends Controller
         // Generate unik booking code
         $bookingCode = 'SJT-' . date('Ym') . '-' . strtoupper(Str::random(5));
 
-        $userId = $request->user() ? $request->user()->id : null;
+        $userId = $request->user() ? $request->user()->id : (auth('sanctum')->check() ? auth('sanctum')->id() : null);
         if (!$userId && !empty($validated['customer_email'])) {
             $matchedUser = User::where('email', $validated['customer_email'])->first();
             if ($matchedUser) {

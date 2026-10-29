@@ -217,6 +217,8 @@ watch(() => props.isOpen, (open) => {
   }
 })
 
+const router = useRouter()
+
 const formatPrice = (val: number) => {
   return new Intl.NumberFormat('id-ID').format(val || 0)
 }
@@ -227,8 +229,26 @@ const saveLocalBooking = (bookingItem: any) => {
       const existing = JSON.parse(localStorage.getItem('sjtrans_local_bookings') || '[]')
       const exists = existing.some((b: any) => b.booking_code === bookingItem.booking_code)
       if (!exists) {
-        existing.unshift(bookingItem)
-        localStorage.setItem('sjtrans_local_bookings', JSON.stringify(existing.slice(0, 20)))
+        existing.unshift({
+          ...bookingItem,
+          user_id: user.value?.id || bookingItem.user_id,
+          customer_name: customerForm.name || user.value?.name || bookingItem.customer_name || 'Pelanggan SJ Trans',
+          customer_email: customerForm.email || user.value?.email || bookingItem.customer_email,
+          customer_phone: customerForm.phone || user.value?.phone_number || bookingItem.customer_phone,
+          fleet_name: props.initialData?.fleet?.name || bookingItem.fleet?.name || 'Big Bus SHD Scania K410IB',
+          seats: props.initialData?.fleet?.seats || props.initialData?.fleet?.capacity || 50,
+          units: props.initialData?.totalUnits || bookingItem.total_units || 1,
+          origin: customerForm.pickupAddress || props.initialData?.origin || 'Jakarta',
+          destination: props.initialData?.destination || 'Bandung',
+          start_date: props.initialData?.startDate || bookingItem.start_date,
+          end_date: props.initialData?.endDate || bookingItem.end_date,
+          days: props.initialData?.totalDays || bookingItem.total_days || 1,
+          total_days: props.initialData?.totalDays || bookingItem.total_days || 1,
+          total_price: props.initialData?.totalPrice || bookingItem.total_price || 3800000,
+          payment_status: bookingItem.payment_status === 'paid' ? 'Lunas' : (bookingItem.payment_status === 'dp_paid' ? 'DP Terbayar (30%)' : 'Menunggu Pembayaran'),
+          status: bookingItem.status || 'pending',
+        })
+        localStorage.setItem('sjtrans_local_bookings', JSON.stringify(existing.slice(0, 30)))
       }
     } catch (e) {
       console.error('Failed to save local booking:', e)
@@ -243,14 +263,14 @@ const submitBooking = async () => {
   try {
     const payload = {
       fleet_id: props.initialData?.fleet?.id || 1,
-      customer_name: customerForm.name,
-      customer_email: customerForm.email,
-      customer_phone: customerForm.phone,
+      customer_name: customerForm.name || user.value?.name || 'Pelanggan SJ Trans',
+      customer_email: customerForm.email || user.value?.email || 'customer@sjtrans.co.id',
+      customer_phone: customerForm.phone || user.value?.phone_number || '08123456789',
       pickup_location: customerForm.pickupAddress || props.initialData?.origin || 'Jakarta',
       destination: props.initialData?.destination || 'Bandung',
       start_date: props.initialData?.startDate || new Date().toISOString().split('T')[0],
       end_date: props.initialData?.endDate || new Date().toISOString().split('T')[0],
-      total_passengers: props.initialData?.fleet?.capacity || 50,
+      total_passengers: props.initialData?.fleet?.capacity || props.initialData?.fleet?.seats || 50,
       total_units: props.initialData?.totalUnits || 1,
       discount_code: props.initialData?.discountCode || null,
       special_notes: customerForm.notes,
@@ -277,16 +297,17 @@ const submitBooking = async () => {
     const code = 'SJT-' + new Date().getFullYear() + '10-' + Math.floor(1000 + Math.random() * 9000)
     confirmedBooking.value = {
       booking_code: code,
-      customer_name: customerForm.name,
-      customer_email: customerForm.email,
-      customer_phone: customerForm.phone,
+      customer_name: customerForm.name || user.value?.name || 'Pelanggan SJ Trans',
+      customer_email: customerForm.email || user.value?.email || 'customer@sjtrans.co.id',
+      customer_phone: customerForm.phone || user.value?.phone_number || '08123456789',
       destination: props.initialData?.destination || 'Bandung',
       start_date: props.initialData?.startDate || new Date().toISOString().split('T')[0],
+      end_date: props.initialData?.endDate || new Date().toISOString().split('T')[0],
       total_days: props.initialData?.totalDays || 1,
       total_price: props.initialData?.totalPrice || 3800000,
       discount_amount: props.initialData?.discountAmount || 0,
       status: 'pending',
-      payment_status: 'unpaid',
+      payment_status: 'Menunggu Pembayaran',
       fleet: props.initialData?.fleet || { name: 'Big Bus Scania K410IB' },
     }
     saveLocalBooking(confirmedBooking.value)
@@ -299,5 +320,6 @@ const submitBooking = async () => {
 const finishBooking = () => {
   emit('close')
   emit('open-my-bookings')
+  router.push('/customer')
 }
 </script>

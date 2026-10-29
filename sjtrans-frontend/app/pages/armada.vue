@@ -238,11 +238,13 @@
       :is-open="showBookingModal"
       :initial-data="bookingData"
       @close="showBookingModal = false"
+      @open-my-bookings="router.push('/customer')"
     />
   </div>
 </template>
 
 <script setup lang="ts">
+const router = useRouter()
 const { primaryColor } = useTheme()
 const { t } = useI18n()
 

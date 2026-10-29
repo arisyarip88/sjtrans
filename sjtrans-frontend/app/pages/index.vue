@@ -32,11 +32,13 @@
       :initial-data="currentBookingData"
       @close="showBookingModal = false"
       @booking-confirmed="handleBookingConfirmed"
+      @open-my-bookings="navigateToCustomer"
     />
   </div>
 </template>
 
 <script setup lang="ts">
+const router = useRouter()
 const heroSectionRef = ref<any>(null)
 const showBookingModal = ref(false)
 const currentBookingData = ref<any>(null)
@@ -65,5 +67,10 @@ const handleFleetSelected = (fleet: any) => {
 
 const handleBookingConfirmed = () => {
   showBookingModal.value = false
+}
+
+const navigateToCustomer = () => {
+  showBookingModal.value = false
+  router.push('/customer')
 }
 </script>

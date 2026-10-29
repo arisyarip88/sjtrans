@@ -177,8 +177,8 @@
               :class="isSuperAdmin ? 'bg-purple-50/80 border-purple-100 text-purple-950' : 'bg-blue-50/80 border-blue-100 text-blue-950'"
             >
               <div class="text-[10px] font-black uppercase tracking-wider opacity-75">Tipe Template Aktif:</div>
-              <div class="text-xs font-extrabold flex items-center gap-1.5 mt-0.5">
-                <span>{{ isSuperAdmin ? '👑 Template Super Admin' : '⚙️ Template Admin Operasional' }}</span>
+              <div class="text-xs font-extrabold mt-0.5">
+                {{ isSuperAdmin ? 'Template Super Admin' : 'Template Admin Operasional' }}
               </div>
               <p class="text-[10px] text-slate-600 mt-1 leading-snug">
                 {{ isSuperAdmin ? 'Akses penuh kontrol pengguna, penghapusan permanen data & konfigurasi tema.' : 'Fokus pemrosesan pemesanan, verifikasi transaksi & kesiapan armada.' }}
@@ -186,32 +186,28 @@
             </div>
           </div>
 
-          <!-- Sidebar Navigation Items (High-Contrast Solid Hover) -->
+          <!-- Sidebar Navigation Items (High-Contrast Solid Hover, Clean Professional Typography) -->
           <nav class="flex-1 p-3 space-y-1.5 overflow-y-auto text-xs font-bold">
             <!-- 1. Overview Stats -->
             <button
               @click="activeTab = 'stats'; mobileSidebarOpen = false"
-              class="w-full text-left px-3 py-2.5 rounded-xl transition flex items-center gap-2.5 cursor-pointer font-bold"
+              class="w-full text-left px-3.5 py-2.5 rounded-xl transition flex items-center justify-between cursor-pointer font-bold"
               :class="activeTab === 'stats'
                 ? (isSuperAdmin ? 'bg-purple-600 text-white shadow-sm hover:bg-purple-700 hover:text-white' : 'bg-blue-600 text-white shadow-sm hover:bg-blue-700 hover:text-white')
                 : (isSuperAdmin ? 'text-slate-700 hover:text-purple-700 hover:bg-purple-50' : 'text-slate-700 hover:text-blue-700 hover:bg-blue-50')"
             >
-              <span class="text-base">📊</span>
               <span>{{ t('admin.dashboard') }}</span>
             </button>
 
             <!-- 2. Pemesanan -->
             <button
               @click="activeTab = 'bookings'; mobileSidebarOpen = false"
-              class="w-full text-left px-3 py-2.5 rounded-xl transition flex items-center justify-between cursor-pointer font-bold"
+              class="w-full text-left px-3.5 py-2.5 rounded-xl transition flex items-center justify-between cursor-pointer font-bold"
               :class="activeTab === 'bookings'
                 ? (isSuperAdmin ? 'bg-purple-600 text-white shadow-sm hover:bg-purple-700 hover:text-white' : 'bg-blue-600 text-white shadow-sm hover:bg-blue-700 hover:text-white')
                 : (isSuperAdmin ? 'text-slate-700 hover:text-purple-700 hover:bg-purple-50' : 'text-slate-700 hover:text-blue-700 hover:bg-blue-50')"
             >
-              <div class="flex items-center gap-2.5">
-                <span class="text-base">🎫</span>
-                <span>{{ t('admin.bookings') }}</span>
-              </div>
+              <span>{{ t('admin.bookings') }}</span>
               <span class="text-[10px] px-2 py-0.5 rounded-full font-black" :class="activeTab === 'bookings' ? 'bg-white/25 text-white' : 'bg-slate-200 text-slate-700'">
                 {{ bookings.length }}
               </span>
@@ -220,15 +216,12 @@
             <!-- 3. Transaksi & Verifikasi -->
             <button
               @click="activeTab = 'transactions'; mobileSidebarOpen = false"
-              class="w-full text-left px-3 py-2.5 rounded-xl transition flex items-center justify-between cursor-pointer font-bold"
+              class="w-full text-left px-3.5 py-2.5 rounded-xl transition flex items-center justify-between cursor-pointer font-bold"
               :class="activeTab === 'transactions'
                 ? (isSuperAdmin ? 'bg-purple-600 text-white shadow-sm hover:bg-purple-700 hover:text-white' : 'bg-blue-600 text-white shadow-sm hover:bg-blue-700 hover:text-white')
                 : (isSuperAdmin ? 'text-slate-700 hover:text-purple-700 hover:bg-purple-50' : 'text-slate-700 hover:text-blue-700 hover:bg-blue-50')"
             >
-              <div class="flex items-center gap-2.5">
-                <span class="text-base">💳</span>
-                <span>{{ t('admin.transactions') }}</span>
-              </div>
+              <span>{{ t('admin.transactions') }}</span>
               <span class="text-[10px] px-2 py-0.5 rounded-full font-black" :class="activeTab === 'transactions' ? 'bg-white/25 text-white' : 'bg-slate-200 text-slate-700'">
                 {{ transactions.length }}
               </span>
@@ -237,15 +230,12 @@
             <!-- 4. Armada Bus -->
             <button
               @click="activeTab = 'fleets'; mobileSidebarOpen = false"
-              class="w-full text-left px-3 py-2.5 rounded-xl transition flex items-center justify-between cursor-pointer font-bold"
+              class="w-full text-left px-3.5 py-2.5 rounded-xl transition flex items-center justify-between cursor-pointer font-bold"
               :class="activeTab === 'fleets'
                 ? (isSuperAdmin ? 'bg-purple-600 text-white shadow-sm hover:bg-purple-700 hover:text-white' : 'bg-blue-600 text-white shadow-sm hover:bg-blue-700 hover:text-white')
                 : (isSuperAdmin ? 'text-slate-700 hover:text-purple-700 hover:bg-purple-50' : 'text-slate-700 hover:text-blue-700 hover:bg-blue-50')"
             >
-              <div class="flex items-center gap-2.5">
-                <span class="text-base">🚌</span>
-                <span>{{ t('admin.fleets') }}</span>
-              </div>
+              <span>{{ t('admin.fleets') }}</span>
               <span class="text-[10px] px-2 py-0.5 rounded-full font-black" :class="activeTab === 'fleets' ? 'bg-white/25 text-white' : 'bg-slate-200 text-slate-700'">
                 {{ fleets.length }}
               </span>
@@ -254,32 +244,27 @@
             <!-- 5. Promo & Kupon -->
             <button
               @click="activeTab = 'discounts'; mobileSidebarOpen = false"
-              class="w-full text-left px-3 py-2.5 rounded-xl transition flex items-center gap-2.5 cursor-pointer font-bold"
+              class="w-full text-left px-3.5 py-2.5 rounded-xl transition flex items-center justify-between cursor-pointer font-bold"
               :class="activeTab === 'discounts'
                 ? (isSuperAdmin ? 'bg-purple-600 text-white shadow-sm hover:bg-purple-700 hover:text-white' : 'bg-blue-600 text-white shadow-sm hover:bg-blue-700 hover:text-white')
                 : (isSuperAdmin ? 'text-slate-700 hover:text-purple-700 hover:bg-purple-50' : 'text-slate-700 hover:text-blue-700 hover:bg-blue-50')"
             >
-              <span class="text-base">🏷️</span>
               <span>{{ t('admin.discounts') }}</span>
             </button>
 
             <!-- 6. SUPER ADMIN EXCLUSIVE: User Management -->
             <div v-if="isSuperAdmin" class="pt-3">
-              <div class="text-[10px] font-black text-purple-700 uppercase tracking-wider px-3 py-1 flex items-center gap-1">
-                <span>👑</span>
-                <span>Khusus Super Admin</span>
+              <div class="text-[10px] font-black text-purple-700 uppercase tracking-wider px-3.5 py-1">
+                Khusus Super Admin
               </div>
               <button
                 @click="activeTab = 'users'; mobileSidebarOpen = false"
-                class="w-full text-left px-3 py-2.5 rounded-xl transition flex items-center justify-between cursor-pointer font-bold"
+                class="w-full text-left px-3.5 py-2.5 rounded-xl transition flex items-center justify-between cursor-pointer font-bold mt-1"
                 :class="activeTab === 'users'
                   ? 'bg-purple-600 text-white font-extrabold shadow-sm hover:bg-purple-700 hover:text-white'
                   : 'text-purple-900 bg-purple-50/80 hover:bg-purple-600 hover:text-white'"
               >
-                <div class="flex items-center gap-2.5">
-                  <span class="text-base">👥</span>
-                  <span>{{ t('admin.users') }}</span>
-                </div>
+                <span>{{ t('admin.users') }}</span>
                 <span class="text-[10px] px-2 py-0.5 rounded-full font-bold" :class="activeTab === 'users' ? 'bg-white/25 text-white' : 'bg-purple-200 text-purple-900'">
                   {{ users.length }}
                 </span>
@@ -287,8 +272,8 @@
             </div>
 
             <!-- Lock Info for Operational Admin -->
-            <div v-else class="p-3 mt-4 bg-slate-50 rounded-xl border border-dashed border-slate-200 text-[11px] text-slate-500">
-              <span class="font-bold block text-slate-700 mb-0.5">🔒 Menu Terkunci:</span>
+            <div v-else class="p-3.5 mt-4 bg-slate-50 rounded-xl border border-dashed border-slate-200 text-[11px] text-slate-500">
+              <span class="font-bold block text-slate-700 mb-0.5">Menu Terkunci:</span>
               <span>Kelola Akun Pengguna & Hapus Data Permanen membutuhkan hak akses Super Admin.</span>
             </div>
           </nav>
