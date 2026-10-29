@@ -435,7 +435,7 @@
                         <div class="font-semibold text-slate-800">{{ b.fleet_name }} ({{ b.units }} Unit)</div>
                         <div class="text-[10px] text-slate-400">{{ b.origin }} ➔ {{ b.destination }}</div>
                       </td>
-                      <td class="p-3.5 text-[11px] whitespace-nowrap">{{ b.start_date }} s/d {{ b.end_date }}</td>
+                      <td class="p-3.5 text-[11px] whitespace-nowrap">{{ (b.start_date || '').split('T')[0] }} s/d {{ (b.end_date || '').split('T')[0] }}</td>
                       <td class="p-3.5 font-bold text-slate-900 whitespace-nowrap">Rp {{ Number(b.total_price || 0).toLocaleString('id-ID') }}</td>
                       <td class="p-3.5">
                         <span
