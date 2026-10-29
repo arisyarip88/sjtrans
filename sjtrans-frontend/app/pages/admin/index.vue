@@ -11,6 +11,50 @@
           Halaman ini khusus untuk staf Admin Operasional dan Super Admin SJ Trans. Silakan masuk dengan akun yang memiliki hak akses.
         </p>
 
+        <!-- Manual Login Form -->
+        <form @submit.prevent="handleManualLogin" class="space-y-3.5 text-left mb-5">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Username atau Email Admin</label>
+            <input
+              v-model="manualLoginForm.login"
+              type="text"
+              required
+              placeholder="Contoh: superadmin atau admin@sjtrans.co.id"
+              class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 font-medium focus:ring-2 focus:ring-blue-600 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Password</label>
+            <input
+              v-model="manualLoginForm.password"
+              type="password"
+              required
+              placeholder="Masukkan password admin"
+              class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 font-medium focus:ring-2 focus:ring-blue-600 focus:outline-none"
+            />
+          </div>
+
+          <div v-if="loginErrorMessage" class="p-2.5 rounded-xl bg-red-50 border border-red-200 text-red-600 font-semibold text-xs">
+            {{ loginErrorMessage }}
+          </div>
+
+          <button
+            type="submit"
+            :disabled="isLoggingIn"
+            class="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition shadow-md cursor-pointer disabled:opacity-50"
+          >
+            <span v-if="isLoggingIn">Memverifikasi Akun...</span>
+            <span v-else>Masuk ke Panel Admin</span>
+          </button>
+        </form>
+
+        <div class="relative flex py-2 items-center mb-4">
+          <div class="flex-grow border-t border-slate-200"></div>
+          <span class="flex-shrink mx-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Atau 1-Click Login Cepat</span>
+          <div class="flex-grow border-t border-slate-200"></div>
+        </div>
+
         <!-- Demo 1-Click Login Helper -->
         <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200 mb-6 text-left space-y-2.5">
           <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Pilih Akun Demo Admin:</div>
@@ -620,6 +664,7 @@
 const router = useRouter()
 const { user, isLoggedIn, isAdmin, isSuperAdmin, login, logout } = useAuth()
 const { locale, setLocale, t } = useI18n()
+const { showToast } = useNotification()
 
 const activeTab = ref('stats')
 const mobileSidebarOpen = ref(false)
@@ -762,7 +807,29 @@ const users = ref<any[]>([
   },
 ])
 
+const manualLoginForm = ref({
+  login: '',
+  password: '',
+})
+const loginErrorMessage = ref('')
+const isLoggingIn = ref(false)
+
+const handleManualLogin = async () => {
+  loginErrorMessage.value = ''
+  if (!manualLoginForm.value.login || !manualLoginForm.value.password) {
+    loginErrorMessage.value = 'Mohon masukkan username/email dan password.'
+    return
+  }
+  isLoggingIn.value = true
+  const res = await login(manualLoginForm.value.login, manualLoginForm.value.password)
+  isLoggingIn.value = false
+  if (!res.success) {
+    loginErrorMessage.value = res.message || 'Login gagal. Periksa username/email dan password Anda.'
+  }
+}
+
 const quickLogin = async (username: string, pass: string) => {
+  loginErrorMessage.value = ''
   await login(username, pass)
 }
 
@@ -806,10 +873,10 @@ const deleteDiscount = (id: number) => {
 const toggleUserRole = (targetUser: any) => {
   if (targetUser.role.name === 'customer') {
     targetUser.role = { id: 2, name: 'admin', display_name: 'Admin Operasional' }
-    alert(`Hak akses ${targetUser.name} diubah menjadi Admin Operasional!`)
+    showToast('success', 'Hak Akses Diperbarui', `Hak akses ${targetUser.name} diubah menjadi Admin Operasional!`)
   } else if (targetUser.role.name === 'admin') {
     targetUser.role = { id: 3, name: 'customer', display_name: 'Customer' }
-    alert(`Hak akses ${targetUser.name} diubah menjadi Customer!`)
+    showToast('info', 'Hak Akses Diperbarui', `Hak akses ${targetUser.name} diubah menjadi Customer!`)
   }
 }
 </script>

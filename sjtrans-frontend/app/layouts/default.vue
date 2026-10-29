@@ -30,6 +30,9 @@
       @close="showAuthModal = false"
       @auth-success="handleAuthSuccess"
     />
+
+    <!-- 7. Global Rich UI Notifications (Toasts & Custom Alert Modals) -->
+    <AppNotification />
   </div>
 </template>
 

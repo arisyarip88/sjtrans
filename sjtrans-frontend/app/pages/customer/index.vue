@@ -267,16 +267,33 @@
 
           <div>
             <label class="font-bold text-slate-700 block mb-1">Foto Bukti Transfer (Resi/Struk)</label>
-            <input type="file" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700" />
+            <input
+              type="file"
+              accept="image/*,.pdf"
+              @change="handleFileChange"
+              class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
+            />
+            <div v-if="uploadedFileName" class="mt-1.5 text-[11px] font-semibold text-emerald-600 flex items-center gap-1">
+              <span>✓ Berkas:</span>
+              <span class="font-mono text-slate-700 truncate">{{ uploadedFileName }}</span>
+            </div>
           </div>
         </div>
 
         <button
           @click="submitProof"
-          class="btn-primary w-full py-2.5 rounded-xl font-bold text-xs text-center justify-center cursor-pointer shadow-md"
+          :disabled="isUploadingProof"
+          class="btn-primary w-full py-2.5 rounded-xl font-bold text-xs text-center justify-center cursor-pointer shadow-md disabled:opacity-50"
           :style="{ backgroundColor: primaryColor }"
         >
-          Kirim Bukti Pembayaran
+          <span v-if="isUploadingProof" class="flex items-center justify-center gap-2">
+            <svg class="animate-spin h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Mengunggah Bukti Pembayaran...
+          </span>
+          <span v-else>Kirim Bukti Pembayaran</span>
         </button>
       </div>
     </div>
@@ -358,12 +375,24 @@ const router = useRouter()
 const { primaryColor } = useTheme()
 const { user, isLoggedIn, login, logout } = useAuth()
 const { locale, setLocale, t } = useI18n()
+const { showModal, showToast } = useNotification()
 
 const customerTab = ref<'orders' | 'profile'>('orders')
 const selectedOrderForUpload = ref<any>(null)
 const selectedOrderForInvoice = ref<any>(null)
 const uploadBank = ref('')
 const uploadNominal = ref('')
+const uploadedFileName = ref('')
+const isUploadingProof = ref(false)
+
+const handleFileChange = (e: any) => {
+  const file = e.target.files?.[0]
+  if (file) {
+    uploadedFileName.value = file.name
+  } else {
+    uploadedFileName.value = ''
+  }
+}
 
 const myBookings = ref<any[]>([
   {
@@ -407,6 +436,9 @@ const handleLogout = async () => {
 
 const openUploadModal = (order: any) => {
   selectedOrderForUpload.value = order
+  uploadBank.value = ''
+  uploadNominal.value = ''
+  uploadedFileName.value = ''
 }
 
 const openInvoiceModal = (order: any) => {
@@ -414,10 +446,42 @@ const openInvoiceModal = (order: any) => {
 }
 
 const submitProof = () => {
-  if (selectedOrderForUpload.value) {
-    selectedOrderForUpload.value.payment_status = 'Lunas'
-    alert('Bukti pembayaran berhasil diunggah! Status pesanan Anda kini Lunas dan tiket resmi telah diterbitkan.')
-    selectedOrderForUpload.value = null
+  if (!selectedOrderForUpload.value) return
+
+  // 1. Validasi: jika bukti transfer atau nama bank kosong, tampilkan modal NOTIFIKASI GAGAL
+  if (!uploadBank.value.trim() || !uploadedFileName.value) {
+    showModal({
+      type: 'error',
+      title: 'Bukti Pembayaran Gagal Diunggah',
+      message: 'Mohon masukkan nama bank pengirim dan lampirkan foto struk/resi transfer yang valid sebelum mengirim.',
+      buttonText: 'Coba Lagi',
+    })
+    return
   }
+
+  isUploadingProof.value = true
+
+  // Simulasi proses upload dengan feedback responsif
+  setTimeout(() => {
+    isUploadingProof.value = false
+    const order = selectedOrderForUpload.value
+    order.payment_status = 'Lunas'
+    const bookingCode = order.booking_code
+    selectedOrderForUpload.value = null
+
+    // 2. Tampilkan modal NOTIFIKASI BERHASIL berpenampilan modern (Bukan alert bawaan browser)
+    showModal({
+      type: 'success',
+      title: 'Bukti Pembayaran Anda Berhasil Diunggah!',
+      message: `Terima kasih! Bukti transfer untuk kode booking ${bookingCode} telah diterima dan diverifikasi. Status pesanan Anda kini Lunas dan tiket resmi telah diterbitkan.`,
+      buttonText: 'Lihat Tiket Resmi',
+      onConfirm: () => {
+        openInvoiceModal(order)
+      },
+      secondaryButtonText: 'Tutup',
+    })
+
+    showToast('success', 'Pembayaran Terverifikasi', `Status pemesanan ${bookingCode} telah berubah menjadi Lunas.`)
+  }, 700)
 }
 </script>

@@ -110,6 +110,7 @@
 
 <script setup lang="ts">
 const { primaryColor } = useTheme()
+const { showToast } = useNotification()
 
 const showReviewModal = ref(false)
 const reviewStatusMessage = ref('')
@@ -147,7 +148,7 @@ const testimonials = ref([
 
 const submitReview = async () => {
   if (!reviewForm.name || !reviewForm.comment) {
-    alert('Mohon isi nama dan komentar ulasan Anda.')
+    showToast('warning', 'Data Belum Lengkap', 'Mohon isi nama dan komentar ulasan Anda terlebih dahulu.')
     return
   }
 

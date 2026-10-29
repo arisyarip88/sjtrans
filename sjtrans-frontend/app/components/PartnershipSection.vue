@@ -122,6 +122,8 @@ const partners = [
   { name: 'Bank BCA', type: 'Banking Partner' },
 ]
 
+const { showModal, showToast } = useNotification()
+
 const partnerForm = reactive({
   company: '',
   contact: '',
@@ -132,7 +134,7 @@ const partnerForm = reactive({
 
 const submitPartnerForm = async () => {
   if (!partnerForm.company || !partnerForm.phone) {
-    alert('Mohon isi nama perusahaan dan kontak WhatsApp.')
+    showToast('warning', 'Data Belum Lengkap', 'Mohon lengkapi nama instansi/perusahaan dan nomor kontak WhatsApp.')
     return
   }
 
