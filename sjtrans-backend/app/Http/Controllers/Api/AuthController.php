@@ -187,4 +187,22 @@ class AuthController extends Controller
             'is_active' => $user->is_active,
         ]);
     }
+
+    /**
+     * Ubah hak akses role pengguna (Super Admin only)
+     */
+    public function updateUserRole(Request $request, User $user): JsonResponse
+    {
+        $validated = $request->validate([
+            'role_name' => 'required|in:admin,customer',
+        ]);
+
+        $role = Role::where('name', $validated['role_name'])->firstOrFail();
+        $user->update(['role_id' => $role->id]);
+
+        return response()->json([
+            'message' => "Hak akses {$user->name} berhasil diubah menjadi {$role->display_name}.",
+            'user' => $user->fresh('role'),
+        ]);
+    }
 }

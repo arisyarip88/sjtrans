@@ -102,6 +102,7 @@ Route::prefix('v1')->group(function () {
             // Manajemen Akun Pengguna
             Route::get('/admin/users', [AuthController::class, 'users']);
             Route::put('/admin/users/{user}/toggle-status', [AuthController::class, 'toggleUserStatus']);
+            Route::put('/admin/users/{user}/role', [AuthController::class, 'updateUserRole']);
 
             // Hapus Permanen
             Route::delete('/fleets/{busFleet}', [BusFleetController::class, 'destroy']);

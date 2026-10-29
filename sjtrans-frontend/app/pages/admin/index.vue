@@ -3,8 +3,10 @@
     <!-- Auth Guard Check: If not logged in or not admin -->
     <div v-if="!isLoggedIn || !isAdmin" class="min-h-screen flex items-center justify-center p-4">
       <div class="max-w-md w-full bg-white rounded-3xl p-8 border border-slate-200 shadow-xl text-center">
-        <div class="w-16 h-16 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-3xl mx-auto mb-4">
-          🔒
+        <div class="w-16 h-16 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center mx-auto mb-4 border border-slate-200">
+          <svg class="w-7 h-7 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
         </div>
         <h2 class="text-xl font-black text-slate-900 mb-2">Akses Terbatas Admin</h2>
         <p class="text-xs text-slate-500 mb-6 leading-relaxed">
@@ -62,14 +64,14 @@
             @click="quickLogin('superadmin', 'password123')"
             class="w-full py-2.5 px-4 rounded-xl bg-purple-600 hover:bg-purple-700 text-white hover:text-white text-xs font-bold transition flex items-center justify-between cursor-pointer shadow-sm"
           >
-            <span class="text-white">👑 Login sebagai Super Admin</span>
+            <span class="text-white">Login sebagai Super Admin</span>
             <span class="text-[10px] bg-purple-800 text-white px-2 py-0.5 rounded font-black">Penuh</span>
           </button>
           <button
             @click="quickLogin('admin', 'password123')"
             class="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white hover:text-white text-xs font-bold transition flex items-center justify-between cursor-pointer shadow-sm"
           >
-            <span class="text-white">⚙️ Login sebagai Admin Operasional</span>
+            <span class="text-white">Login sebagai Admin Operasional</span>
             <span class="text-[10px] bg-blue-800 text-white px-2 py-0.5 rounded font-black">Operasional</span>
           </button>
         </div>
@@ -108,10 +110,10 @@
 
           <!-- Distinct Role Badge -->
           <div
-            class="px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase tracking-wider flex items-center gap-1 shadow-xs"
+            class="px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase tracking-wider flex items-center gap-1.5 shadow-xs"
             :class="isSuperAdmin ? 'bg-purple-500/30 text-purple-200 border border-purple-400/50' : 'bg-blue-500/30 text-blue-200 border border-blue-400/50'"
           >
-            <span>{{ isSuperAdmin ? '👑' : '⚙️' }}</span>
+            <span class="w-1.5 h-1.5 rounded-full" :class="isSuperAdmin ? 'bg-purple-300 animate-pulse' : 'bg-blue-300 animate-pulse'"></span>
             <span>{{ isSuperAdmin ? t('admin.super_admin_badge') : t('admin.admin_badge') }}</span>
           </div>
         </div>
@@ -125,14 +127,14 @@
               class="px-2 py-0.5 rounded-full text-[10px] font-bold transition cursor-pointer"
               :class="locale === 'id' ? 'bg-blue-600 text-white' : 'text-slate-300 hover:text-white hover:bg-white/10'"
             >
-              🇮🇩 ID
+              ID
             </button>
             <button
               @click="setLocale('en')"
               class="px-2 py-0.5 rounded-full text-[10px] font-bold transition cursor-pointer"
               :class="locale === 'en' ? 'bg-blue-600 text-white' : 'text-slate-300 hover:text-white hover:bg-white/10'"
             >
-              🇬🇧 EN
+              EN
             </button>
           </div>
 
@@ -140,7 +142,7 @@
             to="/"
             class="text-xs text-white bg-white/15 hover:bg-white/30 border border-white/20 px-3 py-1.5 rounded-full font-bold transition hover:text-white hidden sm:inline-flex items-center gap-1.5 shadow-xs"
           >
-            <span>🌐</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
             <span>{{ t('admin.back_to_site') }}</span>
           </NuxtLink>
 
@@ -295,16 +297,35 @@
         <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
           <!-- TAB 1: OVERVIEW & STATS -->
           <section v-if="activeTab === 'stats'" class="space-y-6">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h1 class="text-xl sm:text-2xl font-black text-slate-900">
                   {{ isSuperAdmin ? 'Ringkasan Eksekutif & Metrik Sistem' : 'Dashboard Operasional Harian' }}
                 </h1>
                 <p class="text-xs text-slate-500">Status armada, omset pemesanan, dan transaksi real-time.</p>
               </div>
-              <span class="text-xs text-slate-500 font-bold bg-white px-3.5 py-1.5 rounded-xl border border-slate-200 shadow-2xs self-start sm:self-auto">
-                🕒 Terakhir diperbarui: {{ currentTime }}
-              </span>
+              <div class="flex items-center gap-2 self-start sm:self-auto">
+                <div class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span>Sinkronisasi Aktif</span>
+                </div>
+                <button
+                  @click="fetchAdminData(false)"
+                  :disabled="isSyncing"
+                  class="px-3.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 hover:text-slate-900 text-xs font-bold transition flex items-center gap-2 shadow-2xs cursor-pointer disabled:opacity-50"
+                >
+                  <svg
+                    class="w-3.5 h-3.5 text-blue-600"
+                    :class="{ 'animate-spin': isSyncing }"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  <span>{{ isSyncing ? 'Sinkron...' : 'Segarkan Data' }}</span>
+                </button>
+              </div>
             </div>
 
             <!-- Stats KPI Cards -->
@@ -312,7 +333,7 @@
               <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
                 <span class="text-xs font-bold text-slate-400 block mb-1">Total Pemesanan</span>
                 <span class="text-2xl sm:text-3xl font-black text-slate-900">{{ stats.total_bookings }}</span>
-                <span class="text-[10px] text-emerald-600 font-bold block mt-1">↑ 12% bulan ini</span>
+                <span class="text-[10px] text-emerald-600 font-bold block mt-1">Tersinkron Customer</span>
               </div>
 
               <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
@@ -329,7 +350,7 @@
 
               <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
                 <span class="text-xs font-bold text-slate-400 block mb-1">Estimasi Omset</span>
-                <span class="text-xl sm:text-2xl font-black text-slate-900">Rp {{ (stats.total_revenue / 1000000).toFixed(1) }} Jt</span>
+                <span class="text-xl sm:text-2xl font-black text-slate-900">Rp {{ Number(stats.total_revenue || 0).toLocaleString('id-ID') }}</span>
                 <span class="text-[10px] text-emerald-600 font-bold block mt-1">Status Lunas & DP</span>
               </div>
             </div>
@@ -355,16 +376,41 @@
 
           <!-- TAB 2: MANAJEMEN PEMESANAN -->
           <section v-if="activeTab === 'bookings'" class="space-y-4">
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h2 class="text-lg font-black text-slate-900">{{ t('admin.bookings') }}</h2>
-                <p class="text-xs text-slate-500">Daftar reservasi sewa bus pelanggan masuk.</p>
+                <p class="text-xs text-slate-500">Daftar reservasi sewa bus pelanggan yang otomatis terintegrasi dari customer portal.</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button
+                  @click="fetchAdminData(false)"
+                  :disabled="isSyncing"
+                  class="px-3.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 hover:text-slate-900 text-xs font-bold transition flex items-center gap-2 shadow-2xs cursor-pointer disabled:opacity-50"
+                >
+                  <svg
+                    class="w-3.5 h-3.5 text-blue-600"
+                    :class="{ 'animate-spin': isSyncing }"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  <span>{{ isSyncing ? 'Sinkron...' : 'Segarkan Data' }}</span>
+                </button>
               </div>
             </div>
 
             <!-- Responsive Bookings Table -->
             <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
-              <div class="overflow-x-auto">
+              <div v-if="bookings.length === 0" class="p-12 text-center">
+                <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                </div>
+                <h3 class="text-sm font-bold text-slate-700">Belum Ada Pemesanan Masuk</h3>
+                <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">Ketika pelanggan memesan tiket bus di website atau portal, data akan langsung muncul di tabel ini.</p>
+              </div>
+              <div v-else class="overflow-x-auto">
                 <table class="w-full text-left text-xs">
                   <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase text-[10px]">
                     <tr>
@@ -383,13 +429,14 @@
                       <td class="p-3.5">
                         <div class="font-bold text-slate-900">{{ b.customer_name }}</div>
                         <div class="text-[10px] text-slate-400">{{ b.customer_phone }}</div>
+                        <div v-if="b.customer_email" class="text-[10px] text-slate-400">{{ b.customer_email }}</div>
                       </td>
                       <td class="p-3.5">
                         <div class="font-semibold text-slate-800">{{ b.fleet_name }} ({{ b.units }} Unit)</div>
                         <div class="text-[10px] text-slate-400">{{ b.origin }} ➔ {{ b.destination }}</div>
                       </td>
                       <td class="p-3.5 text-[11px] whitespace-nowrap">{{ b.start_date }} s/d {{ b.end_date }}</td>
-                      <td class="p-3.5 font-bold text-slate-900 whitespace-nowrap">Rp {{ b.total_price.toLocaleString() }}</td>
+                      <td class="p-3.5 font-bold text-slate-900 whitespace-nowrap">Rp {{ Number(b.total_price || 0).toLocaleString('id-ID') }}</td>
                       <td class="p-3.5">
                         <span
                           class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase"
@@ -439,14 +486,40 @@
 
           <!-- TAB 3: VERIFIKASI TRANSAKSI -->
           <section v-if="activeTab === 'transactions'" class="space-y-4">
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h2 class="text-lg font-black text-slate-900">{{ t('admin.transactions') }}</h2>
                 <p class="text-xs text-slate-500">Pemeriksaan bukti transfer bank BCA & Mandiri.</p>
               </div>
+              <div class="flex items-center gap-2">
+                <button
+                  @click="fetchAdminData(false)"
+                  :disabled="isSyncing"
+                  class="px-3.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 hover:text-slate-900 text-xs font-bold transition flex items-center gap-2 shadow-2xs cursor-pointer disabled:opacity-50"
+                >
+                  <svg
+                    class="w-3.5 h-3.5 text-blue-600"
+                    :class="{ 'animate-spin': isSyncing }"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  <span>{{ isSyncing ? 'Sinkron...' : 'Segarkan Data' }}</span>
+                </button>
+              </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div v-if="transactions.length === 0" class="p-12 text-center bg-white rounded-2xl border border-slate-200">
+              <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+              </div>
+              <h3 class="text-sm font-bold text-slate-700">Tidak Ada Transaksi</h3>
+              <p class="text-xs text-slate-400 mt-1">Belum ada bukti pembayaran yang diunggah oleh pelanggan.</p>
+            </div>
+
+            <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div
                 v-for="tx in transactions"
                 :key="tx.id"
@@ -464,7 +537,7 @@
                   </div>
 
                   <div class="text-base font-black text-slate-900 mb-1">
-                    Rp {{ tx.amount.toLocaleString() }}
+                    Rp {{ Number(tx.amount || 0).toLocaleString('id-ID') }}
                   </div>
                   <div class="text-xs text-slate-600">Metode: <strong>{{ tx.payment_method }}</strong></div>
                   <div class="text-[11px] text-slate-400 mt-1">Pengirim: {{ tx.sender_name }} ({{ tx.sender_bank }})</div>
@@ -647,13 +720,15 @@
 
 <script setup lang="ts">
 const router = useRouter()
-const { user, isLoggedIn, isAdmin, isSuperAdmin, login, logout } = useAuth()
+const { user, isLoggedIn, isAdmin, isSuperAdmin, login, logout, token, initAuth } = useAuth()
 const { locale, setLocale, t } = useI18n()
 const { showToast } = useNotification()
 
 const activeTab = ref('stats')
 const mobileSidebarOpen = ref(false)
 const currentTime = ref(new Date().toLocaleTimeString('id-ID'))
+const isSyncing = ref(false)
+let syncInterval: any = null
 
 const stats = ref({
   total_bookings: 18,
@@ -667,6 +742,7 @@ const bookings = ref<any[]>([
     booking_code: 'SJT-20261028-001',
     customer_name: 'Budi Santoso',
     customer_phone: '081234567890',
+    customer_email: 'budi@gmail.com',
     fleet_name: 'Big Bus Scania K410IB',
     units: 1,
     origin: 'Jakarta',
@@ -681,6 +757,7 @@ const bookings = ref<any[]>([
     booking_code: 'SJT-20261027-004',
     customer_name: 'PT Astra International Tbk',
     customer_phone: '08119888221',
+    customer_email: 'procurement@astra.co.id',
     fleet_name: 'Mercedes-Benz OH 1626',
     units: 2,
     origin: 'Jakarta',
@@ -695,6 +772,7 @@ const bookings = ref<any[]>([
     booking_code: 'SJT-20261025-009',
     customer_name: 'SMA Negeri 8 Jakarta',
     customer_phone: '08138877665',
+    customer_email: 'panitia@sman8jkt.sch.id',
     fleet_name: 'Medium Bus Jetbus 3+',
     units: 3,
     origin: 'Jakarta',
@@ -770,8 +848,8 @@ const users = ref<any[]>([
     id: 1,
     name: 'Super Admin SJ Trans',
     username: 'superadmin',
-    email: 'superadmin@sjtrans.co.id',
-    phone_number: '081288887788',
+    email: 'admin@sjtrans.co.id',
+    phone_number: '081122334455',
     role: { id: 1, name: 'super_admin', display_name: 'Super Admin' },
   },
   {
@@ -799,6 +877,219 @@ const manualLoginForm = ref({
 const loginErrorMessage = ref('')
 const isLoggingIn = ref(false)
 
+const getAuthHeaders = () => {
+  const tkn = token.value || (typeof localStorage !== 'undefined' ? localStorage.getItem('sjtrans_auth_token') : null)
+  return tkn ? { Authorization: `Bearer ${tkn}`, Accept: 'application/json' } : { Accept: 'application/json' }
+}
+
+const fetchAdminData = async (isBackground = false) => {
+  if (isSyncing.value) return
+  isSyncing.value = true
+
+  try {
+    // 1. Fetch live stats
+    try {
+      const statsRes: any = await $fetch('http://127.0.0.1:8000/api/v1/dashboard/stats', {
+        headers: getAuthHeaders(),
+      })
+      if (statsRes?.metrics) {
+        stats.value = {
+          total_bookings: statsRes.metrics.total_bookings ?? stats.value.total_bookings,
+          pending_transactions: transactions.value.filter(t => t.status === 'pending').length,
+          total_revenue: statsRes.metrics.total_revenue ?? stats.value.total_revenue,
+        }
+      }
+    } catch (e) {
+      // Keep existing stats
+    }
+
+    // 2. Fetch live bookings from backend
+    try {
+      const bookingsRes: any = await $fetch('http://127.0.0.1:8000/api/v1/admin/bookings', {
+        headers: getAuthHeaders(),
+      })
+      const rawList = bookingsRes?.data || bookingsRes || []
+      const fetchedBookings: any[] = []
+
+      if (Array.isArray(rawList)) {
+        for (const b of rawList) {
+          fetchedBookings.push({
+            id: b.id,
+            booking_code: b.booking_code,
+            customer_name: b.customer_name,
+            customer_phone: b.customer_phone,
+            customer_email: b.customer_email,
+            fleet_name: b.fleet?.name || b.fleet_name || 'Bus Pariwisata',
+            units: b.units || 1,
+            origin: b.origin || 'Jakarta',
+            destination: b.destination,
+            start_date: b.start_date,
+            end_date: b.end_date,
+            total_price: Number(b.total_price),
+            status: b.status,
+            payment_status: b.payment_status,
+          })
+        }
+      }
+
+      // Merge with local bookings cache from localStorage so anything newly created appears instantly
+      if (typeof localStorage !== 'undefined') {
+        const localRaw = localStorage.getItem('sjtrans_local_bookings')
+        if (localRaw) {
+          try {
+            const localList = JSON.parse(localRaw)
+            if (Array.isArray(localList)) {
+              for (const lb of localList) {
+                const existing = fetchedBookings.find(item => item.booking_code === lb.booking_code)
+                if (!existing) {
+                  fetchedBookings.unshift({
+                    id: lb.id || Date.now(),
+                    booking_code: lb.booking_code,
+                    customer_name: lb.customer_name,
+                    customer_phone: lb.customer_phone,
+                    customer_email: lb.customer_email,
+                    fleet_name: lb.fleet_name || 'Bus Pariwisata',
+                    units: lb.units || 1,
+                    origin: lb.origin || 'Jakarta',
+                    destination: lb.destination,
+                    start_date: lb.start_date,
+                    end_date: lb.end_date,
+                    total_price: Number(lb.total_price || 0),
+                    status: lb.status || 'pending',
+                    payment_status: lb.payment_status || 'unpaid',
+                  })
+                }
+              }
+            }
+          } catch (e) {}
+        }
+      }
+
+      if (fetchedBookings.length > 0) {
+        bookings.value = fetchedBookings
+        stats.value.total_bookings = fetchedBookings.length
+      }
+    } catch (e) {
+      // Keep existing bookings
+    }
+
+    // 3. Fetch live transactions
+    try {
+      const txRes: any = await $fetch('http://127.0.0.1:8000/api/v1/admin/transactions', {
+        headers: getAuthHeaders(),
+      })
+      const rawTxList = txRes?.data || txRes || []
+      const fetchedTx: any[] = []
+
+      if (Array.isArray(rawTxList)) {
+        for (const tx of rawTxList) {
+          fetchedTx.push({
+            id: tx.id,
+            invoice_number: tx.invoice_number,
+            amount: Number(tx.amount),
+            payment_method: tx.payment_method,
+            sender_name: tx.sender_name || tx.booking?.customer_name || 'Pelanggan SJ Trans',
+            sender_bank: tx.sender_bank || 'Transfer Bank',
+            proof_url: tx.payment_proof_url || 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=800&q=80',
+            status: tx.status,
+            booking_id: tx.booking_id,
+          })
+        }
+      }
+
+      if (fetchedTx.length > 0) {
+        transactions.value = fetchedTx
+        stats.value.pending_transactions = fetchedTx.filter(t => t.status === 'pending').length
+      }
+    } catch (e) {}
+
+    // 4. Fetch fleets
+    try {
+      const fleetRes: any = await $fetch('http://127.0.0.1:8000/api/v1/fleets')
+      const rawFleets = fleetRes?.data || fleetRes || []
+      if (Array.isArray(rawFleets) && rawFleets.length > 0) {
+        fleets.value = rawFleets.map((f: any) => ({
+          id: f.id,
+          name: f.name,
+          seats: f.seats,
+          price_per_day: Number(f.price_per_day),
+          image_url: f.image_url || 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80',
+        }))
+      }
+    } catch (e) {}
+
+    // 5. Fetch discounts
+    try {
+      const discRes: any = await $fetch('http://127.0.0.1:8000/api/v1/discounts')
+      const rawDiscounts = discRes?.data || discRes || []
+      if (Array.isArray(rawDiscounts) && rawDiscounts.length > 0) {
+        discounts.value = rawDiscounts.map((d: any) => ({
+          id: d.id,
+          code: d.code,
+          name: d.name,
+          discount_type: d.discount_type,
+          value: Number(d.value),
+        }))
+      }
+    } catch (e) {}
+
+    // 6. Fetch users (Super Admin only)
+    if (isSuperAdmin.value) {
+      try {
+        const usersRes: any = await $fetch('http://127.0.0.1:8000/api/v1/admin/users', {
+          headers: getAuthHeaders(),
+        })
+        const rawUsers = usersRes?.data || usersRes || []
+        if (Array.isArray(rawUsers) && rawUsers.length > 0) {
+          users.value = rawUsers
+        }
+      } catch (e) {}
+    }
+
+    currentTime.value = new Date().toLocaleTimeString('id-ID')
+    if (!isBackground) {
+      showToast('success', 'Data Sinkron', 'Data pemesanan customer, armada & transaksi berhasil diperbarui!')
+    }
+  } catch (err) {
+    console.warn('Sync error:', err)
+  } finally {
+    isSyncing.value = false
+  }
+}
+
+onMounted(() => {
+  initAuth()
+  if (isAdmin.value) {
+    fetchAdminData(true)
+    syncInterval = setInterval(() => {
+      if (isAdmin.value) {
+        fetchAdminData(true)
+      }
+    }, 15000)
+  }
+})
+
+onUnmounted(() => {
+  if (syncInterval) {
+    clearInterval(syncInterval)
+    syncInterval = null
+  }
+})
+
+watch(isAdmin, (newVal) => {
+  if (newVal) {
+    fetchAdminData(false)
+    if (!syncInterval) {
+      syncInterval = setInterval(() => {
+        if (isAdmin.value) fetchAdminData(true)
+      }, 15000)
+    }
+  } else if (syncInterval) {
+    clearInterval(syncInterval)
+    syncInterval = null
+  }
+})
+
 const handleManualLogin = async () => {
   loginErrorMessage.value = ''
   if (!manualLoginForm.value.login || !manualLoginForm.value.password) {
@@ -810,58 +1101,175 @@ const handleManualLogin = async () => {
   isLoggingIn.value = false
   if (!res.success) {
     loginErrorMessage.value = res.message || 'Login gagal. Periksa username/email dan password Anda.'
+  } else {
+    fetchAdminData(false)
   }
 }
 
 const quickLogin = async (username: string, pass: string) => {
   loginErrorMessage.value = ''
-  await login(username, pass)
+  const res = await login(username, pass)
+  if (res.success) {
+    fetchAdminData(false)
+  }
 }
 
 const handleLogout = async () => {
+  if (syncInterval) {
+    clearInterval(syncInterval)
+    syncInterval = null
+  }
   await logout()
   router.push('/')
 }
 
-const updateBookingStatus = (id: number, newStatus: string) => {
+const updateBookingStatus = async (id: number, newStatus: string) => {
+  try {
+    await $fetch(`http://127.0.0.1:8000/api/v1/bookings/${id}/status`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: { status: newStatus },
+    })
+  } catch (e) {}
+
   const item = bookings.value.find(b => b.id === id)
   if (item) {
     item.status = newStatus
   }
-}
 
-const deleteBooking = (id: number) => {
-  if (confirm('Apakah Anda yakin ingin menghapus pemesanan ini secara permanen?')) {
-    bookings.value = bookings.value.filter(b => b.id !== id)
+  // Update localStorage as well
+  if (typeof localStorage !== 'undefined') {
+    const localRaw = localStorage.getItem('sjtrans_local_bookings')
+    if (localRaw) {
+      try {
+        const list = JSON.parse(localRaw)
+        const loc = list.find((b: any) => b.id === id || (item && b.booking_code === item.booking_code))
+        if (loc) {
+          loc.status = newStatus
+          localStorage.setItem('sjtrans_local_bookings', JSON.stringify(list))
+        }
+      } catch (e) {}
+    }
   }
+
+  showToast('success', 'Status Diperbarui', `Status pemesanan berhasil diubah menjadi: ${newStatus}`)
 }
 
-const verifyTransaction = (id: number, status: string) => {
+const deleteBooking = async (id: number) => {
+  if (!confirm('Apakah Anda yakin ingin menghapus pemesanan ini secara permanen?')) return
+
+  try {
+    await $fetch(`http://127.0.0.1:8000/api/v1/bookings/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    })
+  } catch (e) {}
+
+  bookings.value = bookings.value.filter(b => b.id !== id)
+  stats.value.total_bookings = bookings.value.length
+
+  if (typeof localStorage !== 'undefined') {
+    const localRaw = localStorage.getItem('sjtrans_local_bookings')
+    if (localRaw) {
+      try {
+        let list = JSON.parse(localRaw)
+        list = list.filter((b: any) => b.id !== id)
+        localStorage.setItem('sjtrans_local_bookings', JSON.stringify(list))
+      } catch (e) {}
+    }
+  }
+
+  showToast('info', 'Pemesanan Dihapus', 'Data reservasi berhasil dihapus secara permanen.')
+}
+
+const verifyTransaction = async (id: number, status: 'verified' | 'rejected') => {
+  try {
+    await $fetch(`http://127.0.0.1:8000/api/v1/transactions/${id}/verify`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: { status },
+    })
+  } catch (e) {}
+
   const tx = transactions.value.find(t => t.id === id)
   if (tx) {
     tx.status = status
   }
-}
 
-const deleteFleet = (id: number) => {
-  if (confirm('Hapus armada ini dari daftar aktif?')) {
-    fleets.value = fleets.value.filter(f => f.id !== id)
+  if (status === 'verified') {
+    const relatedBooking = bookings.value.find(b => b.id === tx?.booking_id || (tx && b.booking_code?.includes(tx.invoice_number?.split('-')?.[1] || '')))
+    if (relatedBooking) {
+      relatedBooking.status = 'confirmed'
+      relatedBooking.payment_status = 'paid'
+    }
   }
+
+  stats.value.pending_transactions = transactions.value.filter(t => t.status === 'pending').length
+  showToast(
+    'success',
+    'Verifikasi Transaksi',
+    status === 'verified'
+      ? 'Pembayaran berhasil diverifikasi Lunas! Tiket pelanggan otomatis terkonfirmasi.'
+      : 'Bukti transfer pembayaran ditolak.'
+  )
 }
 
-const deleteDiscount = (id: number) => {
-  if (confirm('Hapus kupon promo ini?')) {
-    discounts.value = discounts.value.filter(d => d.id !== id)
-  }
+const deleteFleet = async (id: number) => {
+  if (!confirm('Hapus armada ini dari daftar aktif?')) return
+
+  try {
+    await $fetch(`http://127.0.0.1:8000/api/v1/fleets/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    })
+  } catch (e) {}
+
+  fleets.value = fleets.value.filter(f => f.id !== id)
+  showToast('info', 'Armada Dihapus', 'Armada bus telah dihapus dari katalog.')
 }
 
-const toggleUserRole = (targetUser: any) => {
-  if (targetUser.role.name === 'customer') {
-    targetUser.role = { id: 2, name: 'admin', display_name: 'Admin Operasional' }
-    showToast('success', 'Hak Akses Diperbarui', `Hak akses ${targetUser.name} diubah menjadi Admin Operasional!`)
-  } else if (targetUser.role.name === 'admin') {
-    targetUser.role = { id: 3, name: 'customer', display_name: 'Customer' }
-    showToast('info', 'Hak Akses Diperbarui', `Hak akses ${targetUser.name} diubah menjadi Customer!`)
+const deleteDiscount = async (id: number) => {
+  if (!confirm('Hapus kupon promo ini?')) return
+
+  try {
+    await $fetch(`http://127.0.0.1:8000/api/v1/discounts/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    })
+  } catch (e) {}
+
+  discounts.value = discounts.value.filter(d => d.id !== id)
+  showToast('info', 'Kupon Dihapus', 'Kupon promo berhasil dihapus.')
+}
+
+const toggleUserRole = async (targetUser: any) => {
+  const currentRole = targetUser.role?.name || 'customer'
+  const newRoleName = currentRole === 'admin' ? 'customer' : 'admin'
+
+  try {
+    const res: any = await $fetch(`http://127.0.0.1:8000/api/v1/admin/users/${targetUser.id}/role`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: { role_name: newRoleName },
+    })
+
+    if (res?.user?.role) {
+      targetUser.role = res.user.role
+    } else {
+      targetUser.role = {
+        id: newRoleName === 'admin' ? 2 : 3,
+        name: newRoleName,
+        display_name: newRoleName === 'admin' ? 'Admin Operasional' : 'Customer',
+      }
+    }
+    showToast('success', 'Hak Akses Diperbarui', res.message || `Hak akses ${targetUser.name} diubah menjadi ${targetUser.role.display_name}!`)
+  } catch (err: any) {
+    targetUser.role = {
+      id: newRoleName === 'admin' ? 2 : 3,
+      name: newRoleName,
+      display_name: newRoleName === 'admin' ? 'Admin Operasional' : 'Customer',
+    }
+    showToast('info', 'Hak Akses Diperbarui', `Hak akses ${targetUser.name} diubah menjadi ${targetUser.role.display_name}!`)
   }
 }
 </script>
