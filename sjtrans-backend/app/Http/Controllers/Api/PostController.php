@@ -70,18 +70,22 @@ class PostController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'category_id' => 'nullable|exists:categories,id',
-            'type' => 'required|in:post,page',
+            'type' => 'nullable|in:post,page',
             'excerpt' => 'nullable|string',
             'content' => 'required|string',
             'featured_image' => 'nullable|string',
-            'status' => 'required|in:draft,published,archived',
+            'status' => 'nullable|in:draft,published,archived',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
         ]);
 
         $validated['author_id'] = $request->user()->id;
+        $validated['type'] = $validated['type'] ?? 'post';
+        $validated['status'] = $validated['status'] ?? 'published';
         $validated['slug'] = Str::slug($validated['title']) . '-' . rand(100, 999);
         $validated['published_at'] = $validated['status'] === 'published' ? Carbon::now() : null;
+        $validated['excerpt'] = $validated['excerpt'] ?? Str::limit(strip_tags($validated['content']), 140);
+        $validated['featured_image'] = $validated['featured_image'] ?? 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80';
 
         $post = Post::create($validated);
 

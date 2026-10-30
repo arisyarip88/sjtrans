@@ -84,6 +84,7 @@ Route::prefix('v1')->group(function () {
             // CRUD CMS Artikel & Page
             Route::post('/posts', [PostController::class, 'store']);
             Route::put('/posts/{post}', [PostController::class, 'update']);
+            Route::delete('/posts/{post}', [PostController::class, 'destroy']);
 
             // Moderasi Testimoni
             Route::put('/testimonials/{testimonial}/status', [TestimonialController::class, 'updateStatus']);
@@ -108,7 +109,6 @@ Route::prefix('v1')->group(function () {
             Route::delete('/fleets/{busFleet}', [BusFleetController::class, 'destroy']);
             Route::delete('/bookings/{booking}', [BookingController::class, 'destroy']);
             Route::delete('/discounts/{discount}', [DiscountController::class, 'destroy']);
-            Route::delete('/posts/{post}', [PostController::class, 'destroy']);
             Route::delete('/testimonials/{testimonial}', [TestimonialController::class, 'destroy']);
             Route::delete('/partnerships/{partnership}', [PartnershipController::class, 'destroy']);
 

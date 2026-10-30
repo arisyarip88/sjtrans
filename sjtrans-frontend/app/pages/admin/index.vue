@@ -254,6 +254,20 @@
               <span>{{ t('admin.discounts') }}</span>
             </button>
 
+            <!-- 5.5 Kelola Blog & Artikel (Admin & Super Admin) -->
+            <button
+              @click="activeTab = 'posts'; mobileSidebarOpen = false"
+              class="w-full text-left px-3.5 py-2.5 rounded-xl transition flex items-center justify-between cursor-pointer font-bold"
+              :class="activeTab === 'posts'
+                ? (isSuperAdmin ? 'bg-purple-600 text-white shadow-sm hover:bg-purple-700 hover:text-white' : 'bg-blue-600 text-white shadow-sm hover:bg-blue-700 hover:text-white')
+                : (isSuperAdmin ? 'text-slate-700 hover:text-purple-700 hover:bg-purple-50' : 'text-slate-700 hover:text-blue-700 hover:bg-blue-50')"
+            >
+              <span>Kelola Blog & Artikel</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full font-black" :class="activeTab === 'posts' ? 'bg-white/25 text-white' : 'bg-slate-200 text-slate-700'">
+                {{ blogPosts.length }}
+              </span>
+            </button>
+
             <!-- 6. SUPER ADMIN EXCLUSIVE: User Management -->
             <div v-if="isSuperAdmin" class="pt-3">
               <div class="text-[10px] font-black text-purple-700 uppercase tracking-wider px-3.5 py-1">
@@ -419,13 +433,14 @@
                       <th class="p-3.5">Armada & Rute</th>
                       <th class="p-3.5">Tanggal</th>
                       <th class="p-3.5">Total Biaya</th>
-                      <th class="p-3.5">Status</th>
+                      <th class="p-3.5">Status Pembayaran</th>
+                      <th class="p-3.5">Status Reservasi</th>
                       <th class="p-3.5 text-right">Aksi</th>
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-slate-100 text-slate-700">
                     <tr v-for="b in bookings" :key="b.id" class="hover:bg-slate-50 transition">
-                      <td class="p-3.5 font-mono font-bold text-blue-600">{{ b.booking_code }}</td>
+                      <td class="p-3.5 font-mono font-bold text-blue-600 whitespace-nowrap">{{ b.booking_code }}</td>
                       <td class="p-3.5">
                         <div class="font-bold text-slate-900">{{ b.customer_name }}</div>
                         <div class="text-[10px] text-slate-400">{{ b.customer_phone }}</div>
@@ -436,41 +451,69 @@
                         <div class="text-[10px] text-slate-400">{{ b.origin }} ➔ {{ b.destination }}</div>
                       </td>
                       <td class="p-3.5 text-[11px] whitespace-nowrap">{{ (b.start_date || '').split('T')[0] }} s/d {{ (b.end_date || '').split('T')[0] }}</td>
-                      <td class="p-3.5 font-bold text-slate-900 whitespace-nowrap">Rp {{ Number(b.total_price || 0).toLocaleString('id-ID') }}</td>
-                      <td class="p-3.5">
-                        <span
-                          class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase"
+                      <td class="p-3.5 font-bold text-slate-900 whitespace-nowrap">
+                        <div>Rp {{ Number(b.total_price || 0).toLocaleString('id-ID') }}</div>
+                        <div v-if="b.payment_status === 'down_payment' || b.payment_status === 'dp_paid' || b.payment_status?.includes('DP')" class="text-[10px] text-blue-600 font-bold mt-0.5">
+                          DP 50%: Rp {{ (Number(b.total_price || 0) * 0.5).toLocaleString('id-ID') }}
+                        </div>
+                      </td>
+
+                      <!-- Dropdown Status Pembayaran (Belum Bayar, DP 50%, Lunas 100%, Refund) -->
+                      <td class="p-3.5 min-w-[160px]">
+                        <select
+                          v-model="b.payment_status"
+                          class="w-full text-xs font-bold rounded-xl border px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-2xs transition"
                           :class="{
-                            'bg-amber-100 text-amber-800': b.status === 'pending',
-                            'bg-blue-100 text-blue-800': b.status === 'confirmed',
-                            'bg-emerald-100 text-emerald-800': b.status === 'completed',
-                            'bg-red-100 text-red-800': b.status === 'cancelled',
+                            'bg-amber-50 text-amber-800 border-amber-300': b.payment_status === 'unpaid' || b.payment_status === 'Menunggu Pembayaran',
+                            'bg-blue-50 text-blue-800 border-blue-300': b.payment_status === 'down_payment' || b.payment_status === 'dp_paid' || b.payment_status?.includes('DP'),
+                            'bg-emerald-50 text-emerald-800 border-emerald-300': b.payment_status === 'paid' || b.payment_status === 'Lunas',
+                            'bg-red-50 text-red-800 border-red-300': b.payment_status === 'refunded',
                           }"
                         >
-                          {{ b.status }}
-                        </span>
+                          <option value="unpaid">Belum Bayar (0%)</option>
+                          <option value="down_payment">DP 50% (Uang Muka)</option>
+                          <option value="paid">Lunas Penuh (100%)</option>
+                          <option value="refunded">Dikembalikan (Refund)</option>
+                        </select>
                       </td>
-                      <td class="p-3.5 text-right">
+
+                      <!-- Dropdown Status Reservasi (Menunggu, Terkonfirmasi, Dalam Perjalanan, Selesai, Batal) -->
+                      <td class="p-3.5 min-w-[160px]">
+                        <select
+                          v-model="b.status"
+                          class="w-full text-xs font-bold rounded-xl border px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-2xs transition"
+                          :class="{
+                            'bg-amber-50 text-amber-800 border-amber-300': b.status === 'pending',
+                            'bg-blue-50 text-blue-800 border-blue-300': b.status === 'confirmed',
+                            'bg-indigo-50 text-indigo-800 border-indigo-300': b.status === 'in_trip',
+                            'bg-emerald-50 text-emerald-800 border-emerald-300': b.status === 'completed',
+                            'bg-red-50 text-red-800 border-red-300': b.status === 'cancelled',
+                          }"
+                        >
+                          <option value="pending">Menunggu Konfirmasi</option>
+                          <option value="confirmed">Terkonfirmasi (Siap)</option>
+                          <option value="in_trip">Dalam Perjalanan</option>
+                          <option value="completed">Perjalanan Selesai</option>
+                          <option value="cancelled">Dibatalkan</option>
+                        </select>
+                      </td>
+
+                      <!-- Tombol Konfirmasi & Simpan -->
+                      <td class="p-3.5 text-right whitespace-nowrap">
                         <div class="flex items-center justify-end gap-1.5">
                           <button
-                            v-if="b.status === 'pending'"
-                            @click="updateBookingStatus(b.id, 'confirmed')"
-                            class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white hover:text-white rounded-lg text-xs font-bold transition shadow-2xs cursor-pointer"
+                            @click="saveBookingStatus(b)"
+                            :disabled="b.isSaving"
+                            class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white hover:text-white rounded-xl text-xs font-bold transition shadow-2xs cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
                           >
-                            Konfirmasi
-                          </button>
-                          <button
-                            v-if="b.status === 'confirmed'"
-                            @click="updateBookingStatus(b.id, 'completed')"
-                            class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white hover:text-white rounded-lg text-xs font-bold transition shadow-2xs cursor-pointer"
-                          >
-                            Selesai
+                            <svg v-if="b.isSaving" class="animate-spin h-3 w-3 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                            <span>{{ b.isSaving ? 'Menyimpan...' : 'Konfirmasi' }}</span>
                           </button>
                           <!-- Permanent Delete only for Super Admin -->
                           <button
                             v-if="isSuperAdmin"
                             @click="deleteBooking(b.id)"
-                            class="px-3 py-1.5 bg-red-50 hover:bg-red-600 text-red-700 hover:text-white border border-red-200 rounded-lg text-xs font-bold transition shadow-2xs cursor-pointer"
+                            class="px-2.5 py-1.5 bg-red-50 hover:bg-red-600 text-red-700 hover:text-white border border-red-200 rounded-xl text-xs font-bold transition shadow-2xs cursor-pointer"
                             title="Hapus Permanen (Super Admin Only)"
                           >
                             Hapus
@@ -649,6 +692,121 @@
             </div>
           </section>
 
+          <!-- TAB 5.5: KELOLA BLOG & ARTIKEL INFORMASI (Admin & Super Admin) -->
+          <section v-if="activeTab === 'posts'" class="space-y-4 animate-fade">
+            <!-- Header bar -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
+              <div>
+                <div class="inline-flex items-center gap-2 bg-blue-50 text-blue-700 text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full mb-1">
+                  <span>Modul Publikasi & Informasi</span>
+                </div>
+                <h2 class="text-lg font-black text-slate-900">Kelola Blog & Artikel SJ Trans</h2>
+                <p class="text-xs text-slate-500">Publikasikan informasi rute, tips sewa bus pariwisata, atau hapus artikel yang sudah usang.</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button
+                  @click="fetchBlogPosts"
+                  :disabled="isLoadingPosts"
+                  class="px-3.5 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                >
+                  <svg class="w-3.5 h-3.5 text-blue-600" :class="{ 'animate-spin': isLoadingPosts }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                  <span>Segarkan</span>
+                </button>
+                <button
+                  @click="openCreatePostModal"
+                  class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white hover:text-white text-xs font-bold transition shadow-sm flex items-center gap-1.5 cursor-pointer"
+                >
+                  <span>+</span>
+                  <span>Tulis Artikel Baru</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Articles Table -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
+              <div v-if="blogPosts.length === 0" class="p-12 text-center">
+                <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" /></svg>
+                </div>
+                <h3 class="text-sm font-bold text-slate-700">Belum Ada Artikel Blog</h3>
+                <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">Klik tombol "Tulis Artikel Baru" di atas untuk menambahkan artikel informasi wisata atau panduan bagi calon penyewa bus.</p>
+              </div>
+
+              <div v-else class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                  <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase text-[10px]">
+                    <tr>
+                      <th class="p-3.5">Artikel & Sampul</th>
+                      <th class="p-3.5">Kategori</th>
+                      <th class="p-3.5">Penulis</th>
+                      <th class="p-3.5">Dibaca</th>
+                      <th class="p-3.5">Status</th>
+                      <th class="p-3.5 text-right">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 text-slate-700">
+                    <tr v-for="post in blogPosts" :key="post.id" class="hover:bg-slate-50 transition">
+                      <td class="p-3.5 max-w-sm">
+                        <div class="flex items-start gap-3">
+                          <img
+                            :src="post.featured_image || 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=200&q=80'"
+                            :alt="post.title"
+                            class="w-14 h-11 object-cover rounded-lg shrink-0 border border-slate-200"
+                          />
+                          <div>
+                            <div class="font-bold text-slate-900 line-clamp-1 text-xs">{{ post.title }}</div>
+                            <div class="text-[11px] text-slate-500 line-clamp-1 mt-0.5">{{ post.excerpt }}</div>
+                            <div class="text-[10px] text-slate-400 mt-1 font-mono">/blog/{{ post.slug }}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="p-3.5 whitespace-nowrap">
+                        <span class="bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-lg text-[10px] font-bold">
+                          {{ post.category?.name || 'Tips & Destinasi' }}
+                        </span>
+                      </td>
+                      <td class="p-3.5 whitespace-nowrap">
+                        <div class="font-semibold text-slate-800">{{ post.author?.name || 'Admin SJ Trans' }}</div>
+                        <div class="text-[10px] text-slate-400">{{ (post.published_at || post.created_at || '').split('T')[0] }}</div>
+                      </td>
+                      <td class="p-3.5 font-bold text-slate-700 whitespace-nowrap">
+                        {{ Number(post.views_count || 0).toLocaleString('id-ID') }}x
+                      </td>
+                      <td class="p-3.5 whitespace-nowrap">
+                        <span
+                          class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase"
+                          :class="post.status === 'published' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'"
+                        >
+                          {{ post.status || 'published' }}
+                        </span>
+                      </td>
+                      <td class="p-3.5 text-right whitespace-nowrap">
+                        <div class="flex items-center justify-end gap-1.5">
+                          <NuxtLink
+                            :to="`/blog/${post.slug}`"
+                            target="_blank"
+                            class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition shadow-2xs"
+                          >
+                            Lihat Web
+                          </NuxtLink>
+                          <button
+                            @click="deleteBlogPost(post.id, post.title)"
+                            :disabled="post.isDeleting"
+                            class="px-2.5 py-1.5 bg-red-50 hover:bg-red-600 text-red-700 hover:text-white border border-red-200 rounded-lg text-xs font-bold transition shadow-2xs cursor-pointer disabled:opacity-50"
+                            title="Hapus Artikel Blog"
+                          >
+                            <span v-if="post.isDeleting">Menghapus...</span>
+                            <span v-else>Hapus</span>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
           <!-- TAB 6: SUPER ADMIN EXCLUSIVE - MANAJEMEN PENGGUNA -->
           <section v-if="activeTab === 'users' && isSuperAdmin" class="space-y-4 animate-fade">
             <div class="flex items-center justify-between bg-purple-50 p-4 rounded-2xl border border-purple-100">
@@ -715,6 +873,118 @@
         </main>
       </div>
     </div>
+
+    <!-- MODAL TULIS ARTIKEL BARU (Admin & Super Admin) -->
+    <div
+      v-if="showCreatePostModal"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade overflow-y-auto"
+    >
+      <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-7 shadow-2xl border border-slate-200 relative my-8">
+        <button
+          @click="showCreatePostModal = false"
+          class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-sm font-bold cursor-pointer"
+        >
+          ✕
+        </button>
+
+        <div class="mb-5">
+          <div class="inline-flex items-center gap-2 bg-blue-50 text-blue-700 text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full mb-1">
+            <span>Form Artikel Baru</span>
+          </div>
+          <h3 class="text-base font-black text-slate-900">Publikasikan Artikel Informasi Baru</h3>
+          <p class="text-xs text-slate-500">Artikel akan langsung tayang pada halaman /blog website untuk dibaca oleh calon pelanggan.</p>
+        </div>
+
+        <form @submit.prevent="handleCreatePost" class="space-y-4 text-xs">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Judul Artikel <span class="text-red-500">*</span></label>
+            <input
+              v-model="newPostForm.title"
+              type="text"
+              required
+              placeholder="Contoh: Rekomendasi Rute Wisata Terbaik di Jawa Barat 2026"
+              class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 font-medium focus:ring-2 focus:ring-blue-600 focus:outline-none"
+            />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Kategori Artikel</label>
+              <select
+                v-model="newPostForm.category_name"
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 font-bold focus:ring-2 focus:ring-blue-600 focus:outline-none"
+              >
+                <option value="Tips & Destinasi">Tips & Destinasi Wisata</option>
+                <option value="Panduan Sewa Bus">Panduan Sewa Bus</option>
+                <option value="Info Layanan & Promo">Info Layanan & Promo</option>
+                <option value="Berita SJ Trans">Berita SJ Trans</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Status Publikasi</label>
+              <select
+                v-model="newPostForm.status"
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 font-bold focus:ring-2 focus:ring-blue-600 focus:outline-none"
+              >
+                <option value="published">Langsung Tayang (Published)</option>
+                <option value="draft">Simpan sebagai Draft</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">URL Foto Sampul (Featured Image)</label>
+            <input
+              v-model="newPostForm.featured_image"
+              type="url"
+              placeholder="https://images.unsplash.com/photo-..."
+              class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:ring-2 focus:ring-blue-600 focus:outline-none font-mono"
+            />
+            <span class="text-[10px] text-slate-400 mt-1 block">Bisa gunakan link foto Unsplash bus/pariwisata atau biarkan default bila kosong.</span>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Ringkasan Singkat (Excerpt)</label>
+            <textarea
+              v-model="newPostForm.excerpt"
+              rows="2"
+              placeholder="Ringkasan 1-2 kalimat untuk preview kartu artikel..."
+              class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:ring-2 focus:ring-blue-600 focus:outline-none resize-none"
+            ></textarea>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Isi Konten Artikel <span class="text-red-500">*</span></label>
+            <textarea
+              v-model="newPostForm.content"
+              required
+              rows="6"
+              placeholder="Tulis informasi rute atau panduan perjalanan bus pariwisata secara lengkap di sini..."
+              class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:ring-2 focus:ring-blue-600 focus:outline-none"
+            ></textarea>
+          </div>
+
+          <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+            <button
+              type="button"
+              @click="showCreatePostModal = false"
+              class="px-4 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold transition cursor-pointer"
+            >
+              Batal
+            </button>
+            <button
+              type="submit"
+              :disabled="isSubmittingPost"
+              class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition shadow-md cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
+            >
+              <span v-if="isSubmittingPost">Menyimpan...</span>
+              <span v-else>Publikasikan Artikel Sekarang</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -736,6 +1006,19 @@ const stats = ref({
   total_revenue: 68500000,
 })
 
+const blogPosts = ref<any[]>([])
+const isLoadingPosts = ref(false)
+const showCreatePostModal = ref(false)
+const isSubmittingPost = ref(false)
+const newPostForm = ref({
+  title: '',
+  category_name: 'Tips & Destinasi',
+  featured_image: '',
+  excerpt: '',
+  content: '',
+  status: 'published',
+})
+
 const bookings = ref<any[]>([
   {
     id: 1,
@@ -751,6 +1034,7 @@ const bookings = ref<any[]>([
     end_date: '2026-11-03',
     total_price: 12600000,
     status: 'pending',
+    payment_status: 'down_payment',
   },
   {
     id: 2,
@@ -766,6 +1050,7 @@ const bookings = ref<any[]>([
     end_date: '2026-11-14',
     total_price: 30400000,
     status: 'confirmed',
+    payment_status: 'paid',
   },
   {
     id: 3,
@@ -781,6 +1066,7 @@ const bookings = ref<any[]>([
     end_date: '2026-10-30',
     total_price: 15000000,
     status: 'completed',
+    payment_status: 'paid',
   },
 ])
 
@@ -927,7 +1213,7 @@ const fetchAdminData = async (isBackground = false) => {
             end_date: b.end_date,
             total_price: Number(b.total_price),
             status: b.status,
-            payment_status: b.payment_status,
+            payment_status: (b.payment_status === 'Lunas' || b.payment_status === 'paid') ? 'paid' : ((b.payment_status === 'dp_paid' || b.payment_status?.includes('DP') || b.payment_status === 'down_payment') ? 'down_payment' : (b.payment_status === 'refunded' ? 'refunded' : 'unpaid')),
           })
         }
       }
@@ -942,6 +1228,7 @@ const fetchAdminData = async (isBackground = false) => {
               for (const lb of localList) {
                 const existing = fetchedBookings.find(item => item.booking_code === lb.booking_code)
                 if (!existing) {
+                  const lbPay = (lb.payment_status === 'Lunas' || lb.payment_status === 'paid') ? 'paid' : ((lb.payment_status === 'dp_paid' || lb.payment_status?.includes('DP') || lb.payment_status === 'down_payment') ? 'down_payment' : (lb.payment_status === 'refunded' ? 'refunded' : 'unpaid'))
                   fetchedBookings.unshift({
                     id: lb.id || Date.now(),
                     booking_code: lb.booking_code,
@@ -956,7 +1243,7 @@ const fetchAdminData = async (isBackground = false) => {
                     end_date: lb.end_date,
                     total_price: Number(lb.total_price || 0),
                     status: lb.status || 'pending',
-                    payment_status: lb.payment_status || 'unpaid',
+                    payment_status: lbPay,
                   })
                 }
               }
@@ -1046,6 +1333,9 @@ const fetchAdminData = async (isBackground = false) => {
       } catch (e) {}
     }
 
+    // 7. Fetch blog posts
+    await fetchBlogPosts()
+
     currentTime.value = new Date().toLocaleTimeString('id-ID')
     if (!isBackground) {
       showToast('success', 'Data Sinkron', 'Data pemesanan customer, armada & transaksi berhasil diperbarui!')
@@ -1123,36 +1413,130 @@ const handleLogout = async () => {
   router.push('/')
 }
 
-const updateBookingStatus = async (id: number, newStatus: string) => {
-  try {
-    await $fetch(`http://127.0.0.1:8000/api/v1/bookings/${id}/status`, {
-      method: 'PUT',
-      headers: getAuthHeaders(),
-      body: { status: newStatus },
-    })
-  } catch (e) {}
+const openCreatePostModal = () => {
+  newPostForm.value = {
+    title: '',
+    category_name: 'Tips & Destinasi',
+    featured_image: '',
+    excerpt: '',
+    content: '',
+    status: 'published',
+  }
+  showCreatePostModal.value = true
+}
 
-  const item = bookings.value.find(b => b.id === id)
-  if (item) {
-    item.status = newStatus
+const fetchBlogPosts = async () => {
+  isLoadingPosts.value = true
+  try {
+    const res: any = await $fetch('http://127.0.0.1:8000/api/v1/posts', {
+      headers: getAuthHeaders(),
+    })
+    const list = res?.data || res || []
+    if (Array.isArray(list)) {
+      blogPosts.value = list.filter((p: any) => p.type !== 'page')
+    }
+  } catch (e) {
+    console.warn('Fetch blog posts error:', e)
+  } finally {
+    isLoadingPosts.value = false
+  }
+}
+
+const handleCreatePost = async () => {
+  if (!newPostForm.value.title.trim() || !newPostForm.value.content.trim()) {
+    showToast('error', 'Gagal', 'Judul dan isi artikel wajib diisi!')
+    return
   }
 
-  // Update localStorage as well
+  isSubmittingPost.value = true
+  try {
+    const res: any = await $fetch('http://127.0.0.1:8000/api/v1/posts', {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: {
+        title: newPostForm.value.title,
+        content: newPostForm.value.content,
+        excerpt: newPostForm.value.excerpt || undefined,
+        featured_image: newPostForm.value.featured_image || 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80',
+        type: 'post',
+        status: newPostForm.value.status,
+      },
+    })
+
+    if (res?.data) {
+      blogPosts.value.unshift(res.data)
+    } else {
+      await fetchBlogPosts()
+    }
+
+    showCreatePostModal.value = false
+    showToast('success', 'Artikel Diterbitkan', `Artikel "${newPostForm.value.title}" berhasil dipublikasikan ke blog!`)
+  } catch (err: any) {
+    showToast('error', 'Gagal Menyimpan', err?.data?.message || 'Terjadi kesalahan saat mempublikasikan artikel.')
+  } finally {
+    isSubmittingPost.value = false
+  }
+}
+
+const deleteBlogPost = async (id: number, title: string) => {
+  if (!confirm(`Apakah Anda yakin ingin menghapus artikel "${title}"?`)) return
+
+  const target = blogPosts.value.find(p => p.id === id)
+  if (target) target.isDeleting = true
+
+  try {
+    await $fetch(`http://127.0.0.1:8000/api/v1/posts/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    })
+    blogPosts.value = blogPosts.value.filter(p => p.id !== id)
+    showToast('info', 'Artikel Dihapus', `Artikel "${title}" telah dihapus dari blog.`)
+  } catch (err: any) {
+    showToast('error', 'Gagal Menghapus', err?.data?.message || 'Gagal menghapus artikel.')
+    if (target) target.isDeleting = false
+  }
+}
+
+const saveBookingStatus = async (b: any) => {
+  b.isSaving = true
+
+  let payStatus = b.payment_status || 'unpaid'
+  if (payStatus === 'Menunggu Pembayaran') payStatus = 'unpaid'
+  if (payStatus === 'DP Terbayar (50%)' || payStatus === 'dp_paid' || payStatus.includes('DP')) payStatus = 'down_payment'
+  if (payStatus === 'Lunas') payStatus = 'paid'
+
+  try {
+    await $fetch(`http://127.0.0.1:8000/api/v1/bookings/${b.id}/status`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: {
+        status: b.status,
+        payment_status: payStatus,
+      },
+    })
+  } catch (e: any) {
+    console.warn('Backend status update warning:', e)
+  }
+
+  // Update in local storage sjtrans_local_bookings
   if (typeof localStorage !== 'undefined') {
     const localRaw = localStorage.getItem('sjtrans_local_bookings')
     if (localRaw) {
       try {
         const list = JSON.parse(localRaw)
-        const loc = list.find((b: any) => b.id === id || (item && b.booking_code === item.booking_code))
+        const loc = list.find((item: any) => item.id === b.id || item.booking_code === b.booking_code)
         if (loc) {
-          loc.status = newStatus
+          loc.status = b.status
+          loc.payment_status = b.payment_status
           localStorage.setItem('sjtrans_local_bookings', JSON.stringify(list))
         }
       } catch (e) {}
     }
   }
 
-  showToast('success', 'Status Diperbarui', `Status pemesanan berhasil diubah menjadi: ${newStatus}`)
+  b.isSaving = false
+  const payLabel = b.payment_status === 'down_payment' ? 'DP 50% (Uang Muka)' : (b.payment_status === 'paid' ? 'Lunas 100%' : (b.payment_status === 'refunded' ? 'Dikembalikan' : 'Belum Bayar (0%)'))
+  showToast('success', 'Status Berhasil Dikonfirmasi', `Pemesanan ${b.booking_code} dikonfirmasi: Status "${b.status}", Pembayaran "${payLabel}"`)
 }
 
 const deleteBooking = async (id: number) => {

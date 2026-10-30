@@ -148,12 +148,12 @@
                   <span
                     class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase"
                     :class="{
-                      'bg-amber-100 text-amber-800': order.payment_status === 'Menunggu Pembayaran',
-                      'bg-blue-100 text-blue-800': order.payment_status === 'DP Terbayar (30%)',
-                      'bg-emerald-100 text-emerald-800': order.payment_status === 'Lunas',
+                      'bg-amber-100 text-amber-800': order.payment_status === 'Menunggu Pembayaran' || order.payment_status === 'unpaid',
+                      'bg-blue-100 text-blue-800': order.payment_status?.includes('DP') || order.payment_status === 'down_payment' || order.payment_status === 'dp_paid',
+                      'bg-emerald-100 text-emerald-800': order.payment_status === 'Lunas' || order.payment_status === 'paid',
                     }"
                   >
-                    ● {{ order.payment_status }}
+                    ● {{ formatPaymentStatusLabel(order.payment_status) }}
                   </span>
                 </div>
 
@@ -256,13 +256,29 @@
           </div>
 
           <div>
+            <label class="font-bold text-slate-700 block mb-1">Pilihan Pembayaran</label>
+            <select
+              v-model="uploadPaymentType"
+              @change="handlePaymentTypeChange"
+              class="w-full p-2.5 border border-slate-200 rounded-xl text-xs font-bold bg-white text-slate-800"
+            >
+              <option value="down_payment">DP 50% (Uang Muka) - Rp {{ (selectedOrderForUpload.total_price * 0.5).toLocaleString('id-ID') }}</option>
+              <option value="full_payment">Pelunasan Penuh (100%) - Rp {{ selectedOrderForUpload.total_price.toLocaleString('id-ID') }}</option>
+              <option value="remaining">Sisa Pelunasan (50%) - Rp {{ (selectedOrderForUpload.total_price * 0.5).toLocaleString('id-ID') }}</option>
+            </select>
+            <span class="text-[10px] text-slate-500 mt-1 block">
+              {{ uploadPaymentType === 'down_payment' ? 'Bayar 50% sebagai tanda jadi. Sisa 50% dapat dilunasi saat keberangkatan.' : 'Pelunasan 100% langsung untuk reservasi bus.' }}
+            </span>
+          </div>
+
+          <div>
             <label class="font-bold text-slate-700 block mb-1">Bank Pengirim Anda</label>
             <input v-model="uploadBank" type="text" placeholder="Contoh: BCA / Mandiri / BNI" class="w-full p-2.5 border border-slate-200 rounded-xl text-xs" />
           </div>
 
           <div>
             <label class="font-bold text-slate-700 block mb-1">Nominal yang Ditransfer</label>
-            <input v-model="uploadNominal" type="text" :placeholder="`Rp ${selectedOrderForUpload.total_price.toLocaleString()}`" class="w-full p-2.5 border border-slate-200 rounded-xl text-xs" />
+            <input v-model="uploadNominal" type="text" class="w-full p-2.5 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 bg-slate-50" />
           </div>
 
           <div>
@@ -387,11 +403,17 @@
                   class="font-black text-sm block"
                   :class="selectedOrderForInvoice.payment_status === 'Lunas' ? 'text-emerald-700' : 'text-blue-700'"
                 >
-                  {{ selectedOrderForInvoice.payment_status === 'Lunas' ? 'LUNAS (VERIFIED PAID)' : selectedOrderForInvoice.payment_status }}
+                  {{ selectedOrderForInvoice.payment_status === 'Lunas' ? 'LUNAS (VERIFIED PAID)' : (selectedOrderForInvoice.payment_status?.includes('DP') ? 'DP 50% DITERIMA (VERIFIED DP)' : selectedOrderForInvoice.payment_status) }}
                 </span>
-                <span class="text-sm font-black text-slate-900 block mt-0.5">
-                  Rp {{ selectedOrderForInvoice.total_price.toLocaleString() }}
-                </span>
+                <div class="text-xs font-mono mt-1 space-y-0.5">
+                  <div class="text-slate-900 font-bold">Total: Rp {{ selectedOrderForInvoice.total_price.toLocaleString() }}</div>
+                  <div v-if="selectedOrderForInvoice.payment_status?.includes('DP')" class="text-emerald-700 text-[11px] font-bold">
+                    Terbayar (DP 50%): Rp {{ (selectedOrderForInvoice.total_price * 0.5).toLocaleString() }}
+                  </div>
+                  <div v-if="selectedOrderForInvoice.payment_status?.includes('DP')" class="text-amber-700 text-[11px] font-bold">
+                    Sisa Pelunasan: Rp {{ (selectedOrderForInvoice.total_price * 0.5).toLocaleString() }} saat berangkat
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -447,11 +469,28 @@ const { showModal, showToast } = useNotification()
 const customerTab = ref<'orders' | 'profile'>('orders')
 const selectedOrderForUpload = ref<any>(null)
 const selectedOrderForInvoice = ref<any>(null)
+const uploadPaymentType = ref<'down_payment' | 'full_payment' | 'remaining'>('down_payment')
 const uploadBank = ref('')
 const uploadNominal = ref('')
 const uploadedFileName = ref('')
 const isUploadingProof = ref(false)
 const isLoadingBookings = ref(false)
+
+const formatPaymentStatusLabel = (status: string) => {
+  if (status === 'paid' || status === 'Lunas') return 'Lunas'
+  if (status === 'down_payment' || status === 'dp_paid' || status === 'DP Terbayar (30%)' || status === 'DP Terbayar (50%)' || status?.includes('DP')) return 'DP Terbayar (50%)'
+  return 'Menunggu Pembayaran'
+}
+
+const handlePaymentTypeChange = () => {
+  if (!selectedOrderForUpload.value) return
+  const total = selectedOrderForUpload.value.total_price || 0
+  if (uploadPaymentType.value === 'down_payment' || uploadPaymentType.value === 'remaining') {
+    uploadNominal.value = `Rp ${(total * 0.5).toLocaleString('id-ID')}`
+  } else {
+    uploadNominal.value = `Rp ${total.toLocaleString('id-ID')}`
+  }
+}
 
 const handleFileChange = (e: any) => {
   const file = e.target.files?.[0]
@@ -610,9 +649,10 @@ const handleLogout = async () => {
 
 const openUploadModal = (order: any) => {
   selectedOrderForUpload.value = order
+  uploadPaymentType.value = order.payment_status?.includes('DP') ? 'remaining' : 'down_payment'
   uploadBank.value = ''
-  uploadNominal.value = ''
   uploadedFileName.value = ''
+  handlePaymentTypeChange()
 }
 
 const openInvoiceModal = (order: any) => {
@@ -645,16 +685,19 @@ const submitProof = () => {
   setTimeout(() => {
     isUploadingProof.value = false
     const order = selectedOrderForUpload.value
-    order.payment_status = 'Lunas'
+    const isDP = uploadPaymentType.value === 'down_payment'
+    const isRemainingOrFull = uploadPaymentType.value === 'full_payment' || uploadPaymentType.value === 'remaining'
+    const newStatus = isRemainingOrFull ? 'Lunas' : 'DP Terbayar (50%)'
+    order.payment_status = newStatus
     const bookingCode = order.booking_code
 
-    // Sinkronisasi status Lunas ke localStorage agar permanen
+    // Sinkronisasi status ke localStorage agar permanen
     if (typeof localStorage !== 'undefined') {
       try {
         const localList = JSON.parse(localStorage.getItem('sjtrans_local_bookings') || '[]')
         const target = localList.find((b: any) => b.booking_code === bookingCode)
         if (target) {
-          target.payment_status = 'Lunas'
+          target.payment_status = newStatus
           localStorage.setItem('sjtrans_local_bookings', JSON.stringify(localList))
         }
       } catch (e) {}
@@ -662,11 +705,13 @@ const submitProof = () => {
 
     selectedOrderForUpload.value = null
 
-    // 2. Tampilkan modal NOTIFIKASI BERHASIL berpenampilan modern (Bukan alert bawaan browser)
+    // 2. Tampilkan modal NOTIFIKASI BERHASIL berpenampilan modern
     showModal({
       type: 'success',
       title: 'Bukti Pembayaran Anda Berhasil Diunggah!',
-      message: `Terima kasih! Bukti transfer untuk kode booking ${bookingCode} telah diterima dan diverifikasi. Status pesanan Anda kini Lunas dan tiket resmi telah diterbitkan.`,
+      message: isDP
+        ? `Terima kasih! Bukti transfer DP 50% untuk kode booking ${bookingCode} telah diterima dan diverifikasi. Sisa pelunasan 50% dapat dibayarkan sebelum atau saat jadwal keberangkatan bus.`
+        : `Terima kasih! Bukti transfer pelunasan untuk kode booking ${bookingCode} telah diterima dan diverifikasi. Status pesanan Anda kini Lunas dan tiket resmi telah diterbitkan.`,
       buttonText: 'Lihat Tiket Resmi',
       onConfirm: () => {
         openInvoiceModal(order)
@@ -674,7 +719,7 @@ const submitProof = () => {
       secondaryButtonText: 'Tutup',
     })
 
-    showToast('success', 'Pembayaran Terverifikasi', `Status pemesanan ${bookingCode} telah berubah menjadi Lunas.`)
+    showToast('success', 'Pembayaran Terverifikasi', `Status pemesanan ${bookingCode} telah diperbarui menjadi ${newStatus}.`)
   }, 700)
 }
 </script>
